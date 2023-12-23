@@ -1,11 +1,9 @@
+import constants as const
 import discord
 import responses
-import os
 
-from dotenv import load_dotenv
 
-load_dotenv()
-TOKEN = os.getenv('TOKEN')
+TOKEN = const.TOKEN
 
 
 async def send_message(message, user_message, is_private):
