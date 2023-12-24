@@ -48,6 +48,7 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
             users[user_]['team'] = str(self._team_)
             users[user_]['loc'] = str(self._loc_)
             users[user_]['div'] = str(self._div_).upper()
+            users[user_]['num'] = '0'
             log.info(f'registration received: {users[user_]}')
             self.write_users(users)
             await self.verify_div(str(self._div_), interaction)
