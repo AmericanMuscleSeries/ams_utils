@@ -101,20 +101,20 @@ class RegistrationMod(commands.Cog):
                                               f'PRO numbers run from 2-99 (leading 0s are OK). AM numbers run from 100-199.',
                                               ephemeral=True)
         
-        user = self.get_user_info(interaction.user)
+        driver = self.get_user_info(interaction.user)
 
-        if user:
-            if user['div'] == 'PRO' and not 1 < int(number) < 100:
+        if driver:
+            if driver['div'] == 'PRO' and not 1 < int(number) < 100:
                 await interaction.response.send_message(f'{number} is not valid for you. PRO numbers run from 2-99. Leading 0s are ok.', ephemeral=True)
-            elif user['div'] == 'AM' and not 100 <= int(number) < 200:
+            elif driver['div'] == 'AM' and not 100 <= int(number) < 200:
                 await interaction.response.send_message(f'{number} is not valid for you. AM numbers run from 100-199.', ephemeral=True)
             else:
                 users = utils.read_json_file(_users)
 
                 for id in users:
-                    u = users[str(id)]
+                    user = users[str(id)]
 
-                    if int(u['num']) == int(number):
+                    if int(user['num']) == int(number):
                         if int(id) == interaction.user.id:
                             await interaction.response.send_message('You already have that number.', ephemeral= True)
                         else:
