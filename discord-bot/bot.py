@@ -3,9 +3,9 @@ import discord
 import logging
 import os
 
-from discord import app_commands
 from discord.ext import commands
 from registration import RegistrationModal
+from typing import Optional
 
 
 GUILD = const.GUILD
@@ -24,6 +24,17 @@ async def load():
     for filename in os.listdir('./cogs'):
         if filename.endswith('.py'):
             await client.load_extension(f'cogs.{filename[:-3]}')
+
+
+@client.command()
+@commands.is_owner()
+async def reload(ctx, extension: Optional[str] = '*'):
+    if extension == '*':
+        for filename in os.listdir('./cogs'):
+            if filename.endswith('.py'):
+                await client.reload_extension(f'cogs.{filename[:-3]}')
+    else:
+        await client.reload_extension(f'cogs.{extension}')
 
 
 @client.command()
