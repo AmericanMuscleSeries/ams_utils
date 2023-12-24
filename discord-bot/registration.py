@@ -50,8 +50,9 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
             users[user_]['div'] = str(self._div_).upper()
             users[user_]['num'] = '0'
             log.info(f'registration received: {users[user_]}')
-            self.write_users(users)
             await self.verify_div(str(self._div_), interaction)
+            await self.set_role(str(self._div_), interaction)
+            self.write_users(users)
             await interaction.response.send_message('You are now registered.', ephemeral=True)
     
 
@@ -59,3 +60,14 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
         if div.upper() not in _divs:
             admin_ch = utils.get(interaction.guild.channels, name=const.ADMIN_CH)
             await admin_ch.send(f'Invalid division entered for {interaction.user.id} ({interaction.user.display_name}): {div.upper()}')
+    
+    
+    async def set_role(self, div: str, interaction: discord.Interaction):
+        for _div in _divs:
+            if div.upper() == _div:
+                div_role = utils.get(interaction.guild.roles, name=_div)
+                await interaction.user.add_roles(div_role)
+        
+        driver_role = utils.get(interaction.guild.roles, name='drivers')
+        unpaid_role = utils.get(interaction.guild.roles, name='unpaid')
+        await interaction.user.add_roles(driver_role, unpaid_role)
