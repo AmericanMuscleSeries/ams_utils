@@ -1,6 +1,6 @@
 import discord
-import json
 import logging
+import utils
 
 from discord import app_commands
 from discord.ext import commands
@@ -17,8 +17,7 @@ class RegistrationMod(commands.Cog):
 
     
     def get_user_info(self, member: discord.Member) -> dict:
-        with open(_users, 'r') as file:
-            users = json.load(file)
+        users = utils.read_json_file(_users)
         
         if str(member.id) in users:
             return users[str(member.id)]
@@ -72,6 +71,26 @@ class RegistrationMod(commands.Cog):
             log.error(f'{ctx.message.author.display_name} attempted `{ctx.message.content}` but something went wrong.\n{error}')
     
 
+    @app_commands.command(description='Set a driver\'s division.  (requires permissions)')
+    @app_commands.describe(driver='The driver whose division is to be changed.', division='The division in which to place the driver.')
+    @commands.is_owner()
+    async def division(self, interaction: discord.Interaction, driver: discord.Member, division: str):
+        users = utils.read_json_file(_users)
+        user = str(driver.id)
+
+        if user in users:
+            current_role = discord.utils.get(interaction.guild.roles, name=users[user]['div'])
+            new_role = discord.utils.get(interaction.guild.roles, name=division.upper())
+            await driver.remove_roles(current_role)
+            await driver.add_roles(new_role)
+            users[user]['div'] = division.upper()
+            utils.write_json_file(users, _users)
+            await interaction.response.send_message(f'{driver.display_name} division updated to {division}', ephemeral=True)
+        else:
+            await interaction.response.send_message(f'{driver.display_name} not registered.', ephemeral=True)
+
+    
+
     @app_commands.command(description='Claim a number if it is available.')
     @app_commands.describe(number='The number you wish to claim. PRO numbers run from 2-99 (leading 0s are OK). AM numbers run from 100-199.')
     async def number(self, interaction: discord.Interaction, number: int):
@@ -90,8 +109,7 @@ class RegistrationMod(commands.Cog):
             elif user['div'] == 'AM' and not 100 <= int(number) < 200:
                 await interaction.response.send_message(f'{number} is not valid for you. AM numbers run from 100-199.', ephemeral=True)
             else:
-                with open(_users, 'r') as file:
-                    users = json.load(file)
+                users = utils.read_json_file(_users)
 
                 for id in users:
                     u = users[str(id)]
@@ -107,8 +125,7 @@ class RegistrationMod(commands.Cog):
                 
                 users[str(interaction.user.id)]['num'] = str(number)[-2:] if users[str(interaction.user.id)]['div'] == 'PRO' else str(number)[-3:]
                 
-                with open(_users, 'w') as file:
-                    json.dump(users, file, indent=4)
+                utils.write_json_file(users, _users)
                 
                 await interaction.response.send_message(f'Your number has been set to {number}.', ephemeral=True)
 

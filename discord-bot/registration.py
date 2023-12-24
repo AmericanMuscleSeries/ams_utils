@@ -2,8 +2,7 @@ import constants as const
 import discord
 import json
 import logging
-
-from discord import utils
+import utils
 
 
 log = logging.getLogger('discord')
@@ -20,22 +19,8 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
                                  style=discord.TextStyle.short)
 
 
-    def read_users(self):
-        log.debug('reading users')
-
-        with open(_users, 'r') as file:
-            return json.load(file)
-
-
-    def write_users(self, users):
-        log.debug('writing users')
-
-        with open(_users, 'w') as file:
-            json.dump(users, file, indent=4)
-
-
     async def on_submit(self, interaction: discord.Interaction):
-        users = self.read_users()
+        users = utils.read_json_file(_users)
         user_ = str(interaction.user.id)
 
         if user_ in users:
@@ -51,24 +36,24 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
             users[user_]['num'] = '0'
             log.info(f'registration received: {users[user_]}')
             await self.verify_div(str(self._div_), interaction)
-            await self.set_role(str(self._div_), interaction)
-            await interaction.user.edit(nick=str(self._pref_name_))
-            self.write_users(users)
+            await self.set_role(str(self._div_), interaction.user, interaction)
+            # await interaction.user.edit(nick=str(self._pref_name_))
+            utils.write_json_file(users,_users)
             await interaction.response.send_message('You are now registered.', ephemeral=True)
     
 
     async def verify_div(self, div: str, interaction: discord.Interaction):
         if div.upper() not in _divs:
-            admin_ch = utils.get(interaction.guild.channels, name=const.ADMIN_CH)
+            admin_ch = discord.utils.get(interaction.guild.channels, name=const.ADMIN_CH)
             await admin_ch.send(f'Invalid division entered for {interaction.user.id} ({interaction.user.display_name}): {div.upper()}')
     
     
-    async def set_role(self, div: str, interaction: discord.Interaction):
+    async def set_role(self, div: str, member: discord.Member, interaction: discord.Interaction):
         for _div in _divs:
             if div.upper() == _div:
-                div_role = utils.get(interaction.guild.roles, name=_div)
-                await interaction.user.add_roles(div_role)
+                div_role = discord.utils.get(interaction.guild.roles, name=_div)
+                await member.add_roles(div_role)
         
-        driver_role = utils.get(interaction.guild.roles, name='drivers')
-        unpaid_role = utils.get(interaction.guild.roles, name='unpaid')
-        await interaction.user.add_roles(driver_role, unpaid_role)
+        driver_role = discord.utils.get(interaction.guild.roles, name='drivers')
+        unpaid_role = discord.utils.get(interaction.guild.roles, name='unpaid')
+        await member.add_roles(driver_role, unpaid_role)
