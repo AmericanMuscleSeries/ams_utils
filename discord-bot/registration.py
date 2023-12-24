@@ -9,7 +9,7 @@ _users = 'static/data/users.json'
 
 class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
     _ir_id_ = discord.ui.TextInput(label='iRacing ID', placeholder='123456', required=True, style=discord.TextStyle.short)
-    _pref_name_ = discord.ui.TextInput(label='What name will you race under? (Preferred Full Name)', placeholder='Marty McFly', required=True, style=discord.TextStyle.short)
+    _pref_name_ = discord.ui.TextInput(label='What is your preferred full name?', placeholder='Marty McFly', required=True, style=discord.TextStyle.short)
     _team_ = discord.ui.TextInput(label='What team will you race for? (optional)', placeholder='Privateer', required=False, style=discord.TextStyle.short)
     _loc_ = discord.ui.TextInput(label='Where are you located? (optional)', placeholder='Parts Unknown', required=False, style=discord.TextStyle.short)
 
