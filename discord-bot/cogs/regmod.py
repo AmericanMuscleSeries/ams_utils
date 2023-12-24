@@ -1,4 +1,3 @@
-import constants as const
 import discord
 import json
 import logging
@@ -17,10 +16,7 @@ class RegistrationMod(commands.Cog):
         self.bot = bot
     
 
-    @app_commands.command(description='Displays registration info for user.')
-    @app_commands.describe(member='The member for whom to fetch registration info.')
-    @commands.is_owner()
-    async def reginfo(self, interaction: discord.Interaction, member: discord.Member):
+    def get_user_info(self, member: discord.Member) -> discord.Embed:
         with open(_users, 'r') as file:
             users = json.load(file)
         
@@ -35,6 +31,27 @@ class RegistrationMod(commands.Cog):
             embed.add_field(name='Team', value=user['team'], inline=False)
             embed.add_field(name='Location', value=user['loc'], inline=False)
             embed.add_field(name='Division', value=user['div'], inline=False)
+            
+            return embed
+    
+
+    @app_commands.command(description='Displays your registration info.')
+    async def myinfo(self, interaction: discord.Interaction):
+        embed = self.get_user_info(interaction.user)
+
+        if embed:
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+        else:
+            await interaction.response.send_message(f'You are not currently registered. Please use `/register` to register.', ephemeral=True)
+    
+
+    @app_commands.command(description='Displays registration info for user. (requires permissions)')
+    @app_commands.describe(member='The member for whom to fetch registration info.')
+    @commands.is_owner()
+    async def reginfo(self, interaction: discord.Interaction, member: discord.Member):
+        embed = self.get_user_info(member)
+
+        if embed:
             await interaction.response.send_message(embed=embed, ephemeral=True)
         else:
             await interaction.response.send_message(f'{member.display_name} not found in registered users.', ephemeral=True)
