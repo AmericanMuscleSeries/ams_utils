@@ -55,6 +55,6 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
     
 
     async def verify_div(self, div: str, interaction: discord.Interaction):
-        if div.upper not in _divs:
+        if div.upper() not in _divs:
             admin_ch = utils.get(interaction.guild.channels, name=const.ADMIN_CH)
             await admin_ch.send(f'Invalid division entered for {interaction.user.id} ({interaction.user.display_name}): {div.upper()}')
