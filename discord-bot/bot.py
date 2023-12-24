@@ -1,29 +1,43 @@
 import constants as const
 import discord
 import logging
+import os
 
 from discord import app_commands
+from discord.ext import commands
 from registration import RegistrationModal
 
 
-TOKEN = const.TOKEN
 GUILD = const.GUILD
 log = logging.getLogger('discord')
 intents = discord.Intents.all()
-client = discord.Client(command_prefix='!', intents=intents)
-tree = app_commands.CommandTree(client)
+client = commands.Bot(command_prefix='!', intents=intents)
 
 
 @client.event
 async def on_ready():
-    tree.copy_global_to(guild=discord.Object(id=GUILD))
-    await tree.sync(guild=discord.Object(id=GUILD))
+    await load()
     log.info(f'{client.user} is now running!')
 
 
-@tree.command(description='Register for current or upcoming AMS season.')
+async def load():
+    for filename in os.listdir('./cogs'):
+        if filename.endswith('.py'):
+            await client.load_extension(f'cogs.{filename[:-3]}')
+
+
+@client.command()
+@commands.guild_only()
+@commands.is_owner()
+async def sync(ctx):
+    ctx.bot.tree.copy_global_to(guild=ctx.guild)
+    synced = await ctx.bot.tree.sync(guild=ctx.guild)
+    log.info(f'{len(synced)} commands synced')
+
+
+@client.tree.command(description='Register for current or upcoming AMS season.')
 async def register(interaction: discord.Interaction):
     await interaction.response.send_modal(RegistrationModal())
 
 
-client.run(TOKEN)
+client.run(const.TOKEN)
