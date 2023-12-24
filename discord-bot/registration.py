@@ -52,6 +52,7 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
             log.info(f'registration received: {users[user_]}')
             await self.verify_div(str(self._div_), interaction)
             await self.set_role(str(self._div_), interaction)
+            await interaction.user.edit(nick=str(self._pref_name_))
             self.write_users(users)
             await interaction.response.send_message('You are now registered.', ephemeral=True)
     
