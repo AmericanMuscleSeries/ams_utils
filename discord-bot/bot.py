@@ -3,6 +3,7 @@ import discord
 import logging
 import os
 
+from datetime import datetime
 from discord.ext import commands
 from registration import RegistrationModal
 from typing import Optional
@@ -49,6 +50,15 @@ async def sync(ctx):
 @client.tree.command(description='Register for current or upcoming AMS season.')
 async def register(interaction: discord.Interaction):
     await interaction.response.send_modal(RegistrationModal())
+
+
+@client.command()
+@commands.is_owner()
+async def clear(ctx, amount, month: int = None, day: int = None, year: int = None):
+    limit = int(amount) + 1 if amount.isdigit() else None
+    has_date = month is not None and day is not None and year is not None
+    date = datetime(year, month, day) if has_date else None
+    await ctx.channel.purge(limit=limit, after=date)
 
 
 client.run(const.TOKEN)
