@@ -101,9 +101,24 @@ class RegistrationMod(commands.Cog):
             users[user_]['pref_name'] = name
             # await driver.edit(nick=name)
             utils.write_json_file(users, _users)
-            await interaction.response.send_message(f'Driver {driver.id} preferred name updated to {driver.display_name}', ephemeral=True)
+            await interaction.response.send_message(f'Driver {driver.id} preferred name updated to {name}.', ephemeral=True)
         else:
             await interaction.response.send_message(f'{driver.display_name} is not registered.', ephemeral=True)
+    
+
+    @app_commands.command(description='Alter your preferred name.')
+    @app_commands.describe(name='The new preferred name you wish to use.')
+    async def name(self, interaction: discord.Interaction, name: str):
+        users = utils.read_json_file(_users)
+        user_ = str(interaction.user.id)
+
+        if user_ in users:
+            users[user_]['pref_name'] = name
+            # await driver.edit(nick=name)
+            utils.write_json_file(users, _users)
+            await interaction.response.send_message(f'Your preferred name updated to {name}.', ephemeral=True)
+        else:
+            await interaction.response.send_message('You are not registered. Use the /register command if you wish to drive in the league.', ephemeral=True)
     
 
     @app_commands.command(description='Claim a number if it is available.')
