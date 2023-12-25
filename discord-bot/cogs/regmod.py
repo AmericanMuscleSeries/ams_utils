@@ -99,7 +99,7 @@ class RegistrationMod(commands.Cog):
 
         if user_ in users:
             users[user_]['pref_name'] = name
-            # await driver.edit(nick=name)
+            await driver.edit(nick=name)
             utils.write_json_file(users, _users)
             await interaction.response.send_message(f'Driver {driver.id} preferred name updated to {name}.', ephemeral=True)
         else:
@@ -114,7 +114,7 @@ class RegistrationMod(commands.Cog):
 
         if user_ in users:
             users[user_]['pref_name'] = name
-            # await driver.edit(nick=name)
+            await interaction.user.edit(nick=name)
             utils.write_json_file(users, _users)
             await interaction.response.send_message(f'Your preferred name updated to {name}.', ephemeral=True)
         else:
