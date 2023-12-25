@@ -90,6 +90,21 @@ class RegistrationMod(commands.Cog):
             await interaction.response.send_message(f'{driver.display_name} not registered.', ephemeral=True)
 
     
+    @app_commands.command(description='Alter a driver\'s preferred name. (requires permissions)')
+    @app_commands.describe(driver='The driver whose name is to be edited.', name='The driver\'s updated name.')
+    @commands.is_owner()
+    async def alter_name(self, interaction: discord.Interaction, driver: discord.Member, name: str):
+        users = utils.read_json_file(_users)
+        user_ = str(driver.id)
+
+        if user_ in users:
+            users[user_]['pref_name'] = name
+            # await driver.edit(nick=name)
+            utils.write_json_file(users, _users)
+            await interaction.response.send_message(f'Driver {driver.id} preferred name updated to {driver.display_name}', ephemeral=True)
+        else:
+            await interaction.response.send_message(f'{driver.display_name} is not registered.', ephemeral=True)
+    
 
     @app_commands.command(description='Claim a number if it is available.')
     @app_commands.describe(number='The number you wish to claim. PRO numbers run from 2-99 (leading 0s are OK). AM numbers run from 100-199.')
