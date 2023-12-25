@@ -156,9 +156,17 @@ class RegistrationMod(commands.Cog):
                 users[str(interaction.user.id)]['num'] = str(number)[-2:] if users[str(interaction.user.id)]['div'] == 'PRO' else str(number)[-3:]
                 
                 utils.write_json_file(users, _users)
-                
-                await interaction.response.send_message(f'Your number has been set to {number}.', ephemeral=True)
 
+                await interaction.response.send_message(f'Your number has been set to {number}.', ephemeral=True)
+    
+
+    @app_commands.command(description='Process a driver\'s payment. (requires permissions)')
+    @app_commands.describe(driver='The driver whose pamyent is to be processed.')
+    @commands.is_owner()
+    async def payment(self, interaction: discord.Interaction, driver: discord.Member):
+        unpaid = discord.utils.get(interaction.guild.roles, name='unpaid')
+        await driver.remove_roles(unpaid)
+        await interaction.response.send_message(f'Payment processed for {driver.display_name}.', ephemeral=True)
 
 
 async def setup(bot):
