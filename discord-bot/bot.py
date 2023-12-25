@@ -61,4 +61,5 @@ async def clear(ctx, amount, month: int = None, day: int = None, year: int = Non
     await ctx.channel.purge(limit=limit, after=date)
 
 
+client.remove_command('help')
 client.run(const.TOKEN)
