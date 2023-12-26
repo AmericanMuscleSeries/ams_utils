@@ -127,7 +127,7 @@ class RegistrationMod(commands.Cog):
 
     @app_commands.command(description='Claim a number if it is available.')
     @app_commands.describe(number='The number you wish to claim. PRO numbers run from 2-99 (leading 0s are OK). AM numbers run from 100-199.')
-    async def number(self, interaction: discord.Interaction, number: int):
+    async def number(self, interaction: discord.Interaction, number: str):
         try:
             int(number)
         except ValueError as e:
