@@ -118,20 +118,11 @@ class RegistrationMod(commands.Cog):
 
         if user_ in users:
             users[user_]['pref_name'] = name
-            await self.set_nick(interaction, name)
+            await utils.set_nick(interaction, name)
             utils.write_json_file(users, _users)
             await interaction.response.send_message(f'Your preferred name updated to {name}.', ephemeral=True)
         else:
             await interaction.response.send_message('You are not registered. Use the /register command if you wish to drive in the league.', ephemeral=True)
-    
-
-    async def set_nick(self, interaction: discord.Interaction, nick: str):
-        try:
-            await interaction.user.edit(nick=nick)
-        except Exception as e:
-            admin_ch = discord.utils.get(interaction.guild.channels, name=const.ADMIN_CH)
-            await admin_ch.send(f'Invalid nick entered for {interaction.user.id} ({interaction.user.display_name}): {nick}')
-            log.error(f'Invalid nick entered for {interaction.user.id} ({interaction.user.display_name}): {nick}', e)
     
 
     @app_commands.command(description='Claim a number if it is available.')
