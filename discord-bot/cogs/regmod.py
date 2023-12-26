@@ -53,6 +53,7 @@ class RegistrationMod(commands.Cog):
 
     @app_commands.command(description='Displays registration info for user. (requires permissions)')
     @app_commands.describe(member='The member for whom to fetch registration info.')
+    @app_commands.default_permissions()
     @commands.is_owner()
     async def reginfo(self, interaction: discord.Interaction, member: discord.Member):
         embed = self.get_user_info_embed(member)
@@ -73,6 +74,7 @@ class RegistrationMod(commands.Cog):
 
     @app_commands.command(description='Set a driver\'s division.  (requires permissions)')
     @app_commands.describe(driver='The driver whose division is to be changed.', division='The division in which to place the driver.')
+    @app_commands.default_permissions()
     @commands.is_owner()
     async def division(self, interaction: discord.Interaction, driver: discord.Member, division: str):
         users = utils.read_json_file(_users)
@@ -92,6 +94,7 @@ class RegistrationMod(commands.Cog):
     
     @app_commands.command(description='Alter a driver\'s preferred name. (requires permissions)')
     @app_commands.describe(driver='The driver whose name is to be edited.', name='The driver\'s updated name.')
+    @app_commands.default_permissions()
     @commands.is_owner()
     async def alter_name(self, interaction: discord.Interaction, driver: discord.Member, name: str):
         users = utils.read_json_file(_users)
@@ -162,6 +165,7 @@ class RegistrationMod(commands.Cog):
 
     @app_commands.command(description='Process a driver\'s payment. (requires permissions)')
     @app_commands.describe(driver='The driver whose pamyent is to be processed.')
+    @app_commands.default_permissions()
     @commands.is_owner()
     async def payment(self, interaction: discord.Interaction, driver: discord.Member):
         unpaid = discord.utils.get(interaction.guild.roles, name='unpaid')
