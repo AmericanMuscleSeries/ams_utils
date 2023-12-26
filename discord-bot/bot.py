@@ -27,15 +27,17 @@ async def load():
             await client.load_extension(f'cogs.{filename[:-3]}')
 
 
-@client.command()
+@client.tree.command()
 @commands.is_owner()
-async def reload(ctx, extension: Optional[str] = '*'):
+async def reload(interaction: discord.Interaction, extension: Optional[str] = '*'):
     if extension == '*':
         for filename in os.listdir('./cogs'):
             if filename.endswith('.py'):
                 await client.reload_extension(f'cogs.{filename[:-3]}')
     else:
         await client.reload_extension(f'cogs.{extension}')
+    
+    await interaction.response.send_message('Reload complete.', ephemeral=True, delete_after=5)
 
 
 @client.command()
@@ -52,13 +54,14 @@ async def register(interaction: discord.Interaction):
     await interaction.response.send_modal(RegistrationModal())
 
 
-@client.command()
+@client.tree.command(description='Clear messages from this channel.')
 @commands.is_owner()
-async def clear(ctx, amount, month: int = None, day: int = None, year: int = None):
+async def clear(interaction: discord.Interaction, amount: str, month: int = None, day: int = None, year: int = None):
     limit = int(amount) + 1 if amount.isdigit() else None
     has_date = month is not None and day is not None and year is not None
     date = datetime(year, month, day) if has_date else None
-    await ctx.channel.purge(limit=limit, after=date)
+    await interaction.channel.purge(limit=limit, after=date)
+    await interaction.response.send_message('Clear done.', ephemeral=True, delete_after=5)
 
 
 client.remove_command('help')
