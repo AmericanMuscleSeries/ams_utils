@@ -118,7 +118,7 @@ class RegistrationMod(commands.Cog):
 
         if user_ in users:
             users[user_]['pref_name'] = name
-            await self.set_nick(interaction.user, name)
+            await self.set_nick(interaction, name)
             utils.write_json_file(users, _users)
             await interaction.response.send_message(f'Your preferred name updated to {name}.', ephemeral=True)
         else:
