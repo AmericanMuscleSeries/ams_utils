@@ -2,6 +2,7 @@ import constants as const
 import discord
 import logging
 import os
+import utils
 
 from datetime import datetime
 from discord.ext import commands
@@ -13,6 +14,7 @@ GUILD = const.GUILD
 log = logging.getLogger('discord')
 intents = discord.Intents.all()
 client = commands.Bot(command_prefix='!', intents=intents)
+_users = 'static/data/users.json'
 
 
 @client.event
@@ -51,7 +53,14 @@ async def sync(ctx):
 
 @client.tree.command(description='Register for current or upcoming AMS season.')
 async def register(interaction: discord.Interaction):
-    await interaction.response.send_modal(RegistrationModal())
+    users = utils.read_json_file(_users)
+    user_ = str(interaction.user.id)
+
+    if user_ in users:
+        log.info(f'{interaction.user.display_name} attempted to register, but is already registered ({users[user_]})')
+        await interaction.response.send_message('You are already registered.', ephemeral=True)
+    else:
+        await interaction.response.send_modal(RegistrationModal())
 
 
 @client.tree.command(description='Clear messages from this channel.')
