@@ -1,4 +1,3 @@
-import constants as const
 import discord
 import logging
 import utils
