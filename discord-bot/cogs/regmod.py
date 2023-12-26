@@ -171,6 +171,14 @@ class RegistrationMod(commands.Cog):
         unpaid = discord.utils.get(interaction.guild.roles, name='unpaid')
         await driver.remove_roles(unpaid)
         await interaction.response.send_message(f'Payment processed for {driver.display_name}.', ephemeral=True)
+    
+
+    @app_commands.command(description='Download registered drivers. (requires permissions)')
+    @app_commands.default_permissions()
+    @commands.is_owner()
+    async def registrations(self, interaction: discord.Interaction):
+        file = discord.File(_users, filename='registrations.json')
+        await interaction.response.send_message(file=file, ephemeral=True)
 
 
 async def setup(bot):
