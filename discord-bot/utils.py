@@ -21,7 +21,7 @@ def write_json_file(json_: dict, file_path: str) -> None:
         json.dump(json_, file, indent=4)
 
 
-async def set_nick(self, interaction: discord.Interaction, nick: str):
+async def set_nick(interaction: discord.Interaction, nick: str):
     try:
         await interaction.user.edit(nick=nick)
     except Exception as e:
