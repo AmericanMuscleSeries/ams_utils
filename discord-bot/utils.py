@@ -23,7 +23,7 @@ def write_json_file(json_: dict, file_path: str) -> None:
 
 async def set_nick(interaction: discord.Interaction, nick: str):
     try:
-        await interaction.user.edit(nick=nick)
+        await interaction.user.edit(nick=nick[0:32])
     except Exception as e:
         admin_ch = discord.utils.get(interaction.guild.channels, name=const.ADMIN_CH)
         await admin_ch.send(f'Invalid nick entered for {interaction.user.id} ({interaction.user.display_name}): {nick}')
