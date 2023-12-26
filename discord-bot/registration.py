@@ -1,6 +1,5 @@
 import constants as const
 import discord
-import json
 import logging
 import utils
 
@@ -37,7 +36,7 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
             log.info(f'registration received: {users[user_]}')
             await self.verify_div(str(self._div_), interaction)
             await self.set_role(str(self._div_), interaction.user, interaction)
-            await interaction.user.edit(nick=str(self._pref_name_))
+            await self.set_nick(interaction.user.edit, str(self._pref_name_))
             utils.write_json_file(users,_users)
             await interaction.response.send_message('You are now registered.', ephemeral=True)
     
@@ -57,3 +56,12 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
         driver_role = discord.utils.get(interaction.guild.roles, name='drivers')
         unpaid_role = discord.utils.get(interaction.guild.roles, name='unpaid')
         await member.add_roles(driver_role, unpaid_role)
+    
+
+    async def set_nick(self, interaction: discord.Interaction, nick: str):
+        try:
+            await interaction.user.edit(nick=nick)
+        except Exception as e:
+            admin_ch = discord.utils.get(interaction.guild.channels, name=const.ADMIN_CH)
+            await admin_ch.send(f'Invalid nick entered for {interaction.user.id} ({interaction.user.display_name}): {nick}')
+            log.error(f'Invalid nick entered for {interaction.user.id} ({interaction.user.display_name}): {nick}', e)
