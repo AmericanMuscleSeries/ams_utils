@@ -147,16 +147,17 @@ class RegistrationMod(commands.Cog):
                 for id in users:
                     user = users[str(id)]
 
-                    if int(user['num']) == int(number):
-                        if int(id) == interaction.user.id:
-                            await interaction.response.send_message('You already have that number.', ephemeral= True)
-                        else:
-                            await interaction.response.send_message(f'Sorry, that number is already taken. Please run the command again with another number.',
-                                                                    ephemeral=True)
-                        
+                    if int(id) == interaction.user.id and user['num'] == number:
+                        await interaction.response.send_message('You already have that number.', ephemeral= True)
+                        return
+                    else:
+                        leading_zero_change = True
+                    
+                    if int(user['num']) == int(number) and not leading_zero_change:
+                        await interaction.response.send_message(f'Sorry, that number is already taken. Please run the command again with another number.',ephemeral=True)
                         return
                 
-                users[str(interaction.user.id)]['num'] = str(number)[-2:] if users[str(interaction.user.id)]['div'] == 'PRO' else str(number)[-3:]
+                users[str(interaction.user.id)]['num'] = number[-2:] if users[str(interaction.user.id)]['div'] == 'PRO' else number[-3:]
                 
                 utils.write_json_file(users, _users)
 
