@@ -26,7 +26,6 @@ class Help(commands.Cog):
         embed.add_field(name='/help', value='Shows this message', inline=False)
         embed.add_field(name='/register', value='Register for current or upcoming AMS season', inline=False)
         embed.add_field(name='/myinfo', value='Displays your registration info', inline=False)
-        embed.add_field(name='/myinfo', value='Displays your registration info', inline=False)
         embed.add_field(name='/name', value='Alter your preferred name', inline=False)
         embed.add_field(name='/number', value='Claim a number if it is available', inline=False)
         await interaction.response.send_message(embed=embed, file=file, ephemeral=True)
