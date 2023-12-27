@@ -20,6 +20,8 @@ _users = 'static/data/users.json'
 @client.event
 async def on_ready():
     await load()
+    synced = await client.tree.sync(guild=discord.Object(id=GUILD))
+    log.info(f'Synced {len(synced)} commands.')
     log.info(f'{client.user} is now running!')
 
 
@@ -29,7 +31,7 @@ async def load():
             await client.load_extension(f'cogs.{filename[:-3]}')
 
 
-@client.tree.command()
+@client.tree.command(description='Reload an extension by name. If a name isn\'t given, all extensions are reloaded.')
 @commands.is_owner()
 async def reload(interaction: discord.Interaction, extension: Optional[str] = '*'):
     if extension == '*':

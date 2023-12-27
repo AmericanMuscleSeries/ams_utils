@@ -180,6 +180,35 @@ class RegistrationMod(commands.Cog):
     async def registrations(self, interaction: discord.Interaction):
         file = discord.File(_users, filename='registrations.json')
         await interaction.response.send_message(file=file, ephemeral=True)
+    
+
+    @app_commands.command(description='Change the team for which you are driving.')
+    @app_commands.describe(team='The team to which you want to change.')
+    async def team(self, interaction: discord.Interaction, team: str):
+        users = utils.read_json_file(_users)
+        user_ = str(interaction.user.id)
+
+        if user_ in users:
+            users[user_]['team'] = team
+            await interaction.response.send_message(f'Your team name has been changed to {team}.', ephemeral=True)
+        else:
+            await interaction.response.send_message(f'You are not currently registered. Please use the `/register` command to register if you wish to drive.',
+                                                    ephemeral=True)
+    
+
+    @app_commands.command(description='Change the team of a driver. (requires permission)')
+    @app_commands.describe(driver='The driver whose team to change.', team='The team to assign to the driver.')
+    @app_commands.default_permissions()
+    @commands.is_owner()
+    async def alter_team(self, interaction: discord.Interaction, driver: discord.Member, team: str):
+        users = utils.read_json_file(_users)
+        user_ = str(driver.id)
+
+        if user_ in users:
+            users[user_]['team'] = team
+            await interaction.response.send_message(f'{driver.display_name}\'s team changed to {team}.', ephemeral=True, delete_after=5)
+        else:
+            await interaction.response.send_message(f'{driver.display_name} ({driver.id}) is not registered.', ephemeral=True, delete_after=5)
 
 
 async def setup(bot):

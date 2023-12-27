@@ -27,6 +27,7 @@ class Help(commands.Cog):
         embed.add_field(name='/myinfo', value='Displays your registration info', inline=False)
         embed.add_field(name='/name', value='Alter your preferred name', inline=False)
         embed.add_field(name='/number', value='Claim a number if it is available', inline=False)
+        embed.add_field(name='/team', value='Alter your team', inline=False)
 
         return embed, file
     
