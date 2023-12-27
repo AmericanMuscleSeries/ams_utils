@@ -66,7 +66,7 @@ async def register(interaction: discord.Interaction):
 @client.tree.command(description='Clear messages from this channel.')
 @commands.is_owner()
 async def clear(interaction: discord.Interaction, amount: str, month: int = None, day: int = None, year: int = None):
-    limit = int(amount) + 1 if amount.isdigit() else None
+    limit = int(amount) if amount.isdigit() else None
     has_date = month is not None and day is not None and year is not None
     date = datetime(year, month, day) if has_date else None
     await interaction.channel.purge(limit=limit, after=date)
