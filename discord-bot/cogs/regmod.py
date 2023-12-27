@@ -190,6 +190,7 @@ class RegistrationMod(commands.Cog):
 
         if user_ in users:
             users[user_]['team'] = team
+            utils.write_json_file(users, _users)
             await interaction.response.send_message(f'Your team name has been changed to {team}.', ephemeral=True)
         else:
             await interaction.response.send_message(f'You are not currently registered. Please use the `/register` command to register if you wish to drive.',
@@ -206,6 +207,7 @@ class RegistrationMod(commands.Cog):
 
         if user_ in users:
             users[user_]['team'] = team
+            utils.write_json_file(users, _users)
             await interaction.response.send_message(f'{driver.display_name}\'s team changed to {team}.', ephemeral=True, delete_after=5)
         else:
             await interaction.response.send_message(f'{driver.display_name} ({driver.id}) is not registered.', ephemeral=True, delete_after=5)
