@@ -2,6 +2,7 @@ import constants as const
 import discord
 import logging
 import os
+import utils
 
 from datetime import datetime
 from discord.ext import commands
@@ -13,11 +14,14 @@ GUILD = const.GUILD
 log = logging.getLogger('discord')
 intents = discord.Intents.all()
 client = commands.Bot(command_prefix='!', intents=intents)
+_users = 'static/data/users.json'
 
 
 @client.event
 async def on_ready():
     await load()
+    synced = await client.tree.sync(guild=discord.Object(id=GUILD))
+    log.info(f'Synced {len(synced)} commands.')
     log.info(f'{client.user} is now running!')
 
 
@@ -27,7 +31,7 @@ async def load():
             await client.load_extension(f'cogs.{filename[:-3]}')
 
 
-@client.tree.command()
+@client.tree.command(description='Reload an extension by name. If a name isn\'t given, all extensions are reloaded.')
 @commands.is_owner()
 async def reload(interaction: discord.Interaction, extension: Optional[str] = '*'):
     if extension == '*':
@@ -51,13 +55,20 @@ async def sync(ctx):
 
 @client.tree.command(description='Register for current or upcoming AMS season.')
 async def register(interaction: discord.Interaction):
-    await interaction.response.send_modal(RegistrationModal())
+    users = utils.read_json_file(_users)
+    user_ = str(interaction.user.id)
+
+    if user_ in users:
+        log.info(f'{interaction.user.display_name} attempted to register, but is already registered ({users[user_]})')
+        await interaction.response.send_message('You are already registered.', ephemeral=True)
+    else:
+        await interaction.response.send_modal(RegistrationModal())
 
 
 @client.tree.command(description='Clear messages from this channel.')
 @commands.is_owner()
 async def clear(interaction: discord.Interaction, amount: str, month: int = None, day: int = None, year: int = None):
-    limit = int(amount) + 1 if amount.isdigit() else None
+    limit = int(amount) if amount.isdigit() else None
     has_date = month is not None and day is not None and year is not None
     date = datetime(year, month, day) if has_date else None
     await interaction.channel.purge(limit=limit, after=date)

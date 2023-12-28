@@ -1,6 +1,5 @@
 import constants as const
 import discord
-import json
 import logging
 import utils
 
@@ -22,24 +21,19 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
     async def on_submit(self, interaction: discord.Interaction):
         users = utils.read_json_file(_users)
         user_ = str(interaction.user.id)
-
-        if user_ in users:
-            log.info(f'{interaction.user.display_name} attempted to register, but is already registered ({user_})')
-            await interaction.response.send_message('You are already registered.', ephemeral=True)
-        else:
-            users[user_] = {}
-            users[user_]['iracing_id'] = str(self._ir_id_)
-            users[user_]['pref_name'] = str(self._pref_name_)
-            users[user_]['team'] = str(self._team_)
-            users[user_]['loc'] = str(self._loc_)
-            users[user_]['div'] = str(self._div_).upper()
-            users[user_]['num'] = '0'
-            log.info(f'registration received: {users[user_]}')
-            await self.verify_div(str(self._div_), interaction)
-            await self.set_role(str(self._div_), interaction.user, interaction)
-            await interaction.user.edit(nick=str(self._pref_name_))
-            utils.write_json_file(users,_users)
-            await interaction.response.send_message('You are now registered.', ephemeral=True)
+        users[user_] = {}
+        users[user_]['iracing_id'] = str(self._ir_id_)
+        users[user_]['pref_name'] = str(self._pref_name_)
+        users[user_]['team'] = str(self._team_)
+        users[user_]['loc'] = str(self._loc_)
+        users[user_]['div'] = str(self._div_).upper()
+        users[user_]['num'] = '0'
+        log.info(f'registration received: {users[user_]}')
+        await self.verify_div(str(self._div_), interaction)
+        await self.set_role(str(self._div_), interaction.user, interaction)
+        await utils.set_nick(interaction, str(self._pref_name_))
+        utils.write_json_file(users,_users)
+        await interaction.response.send_message('You are now registered.', ephemeral=True)
     
 
     async def verify_div(self, div: str, interaction: discord.Interaction):

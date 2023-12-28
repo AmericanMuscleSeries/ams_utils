@@ -117,7 +117,7 @@ class RegistrationMod(commands.Cog):
 
         if user_ in users:
             users[user_]['pref_name'] = name
-            await interaction.user.edit(nick=name)
+            await utils.set_nick(interaction, name)
             utils.write_json_file(users, _users)
             await interaction.response.send_message(f'Your preferred name updated to {name}.', ephemeral=True)
         else:
@@ -126,7 +126,7 @@ class RegistrationMod(commands.Cog):
 
     @app_commands.command(description='Claim a number if it is available.')
     @app_commands.describe(number='The number you wish to claim. PRO numbers run from 2-99 (leading 0s are OK). AM numbers run from 100-199.')
-    async def number(self, interaction: discord.Interaction, number: int):
+    async def number(self, interaction: discord.Interaction, number: str):
         try:
             int(number)
         except ValueError as e:
@@ -147,16 +147,17 @@ class RegistrationMod(commands.Cog):
                 for id in users:
                     user = users[str(id)]
 
-                    if int(user['num']) == int(number):
-                        if int(id) == interaction.user.id:
-                            await interaction.response.send_message('You already have that number.', ephemeral= True)
-                        else:
-                            await interaction.response.send_message(f'Sorry, that number is already taken. Please run the command again with another number.',
-                                                                    ephemeral=True)
-                        
+                    if int(id) == interaction.user.id and user['num'] == number:
+                        await interaction.response.send_message('You already have that number.', ephemeral= True)
+                        return
+                    else:
+                        leading_zero_change = True
+                    
+                    if int(user['num']) == int(number) and not leading_zero_change:
+                        await interaction.response.send_message(f'Sorry, that number is already taken. Please run the command again with another number.',ephemeral=True)
                         return
                 
-                users[str(interaction.user.id)]['num'] = str(number)[-2:] if users[str(interaction.user.id)]['div'] == 'PRO' else str(number)[-3:]
+                users[str(interaction.user.id)]['num'] = number[-2:] if users[str(interaction.user.id)]['div'] == 'PRO' else number[-3:]
                 
                 utils.write_json_file(users, _users)
 
@@ -179,6 +180,37 @@ class RegistrationMod(commands.Cog):
     async def registrations(self, interaction: discord.Interaction):
         file = discord.File(_users, filename='registrations.json')
         await interaction.response.send_message(file=file, ephemeral=True)
+    
+
+    @app_commands.command(description='Change the team for which you are driving.')
+    @app_commands.describe(team='The team to which you want to change.')
+    async def team(self, interaction: discord.Interaction, team: str):
+        users = utils.read_json_file(_users)
+        user_ = str(interaction.user.id)
+
+        if user_ in users:
+            users[user_]['team'] = team
+            utils.write_json_file(users, _users)
+            await interaction.response.send_message(f'Your team name has been changed to {team}.', ephemeral=True)
+        else:
+            await interaction.response.send_message(f'You are not currently registered. Please use the `/register` command to register if you wish to drive.',
+                                                    ephemeral=True)
+    
+
+    @app_commands.command(description='Change the team of a driver. (requires permission)')
+    @app_commands.describe(driver='The driver whose team to change.', team='The team to assign to the driver.')
+    @app_commands.default_permissions()
+    @commands.is_owner()
+    async def alter_team(self, interaction: discord.Interaction, driver: discord.Member, team: str):
+        users = utils.read_json_file(_users)
+        user_ = str(driver.id)
+
+        if user_ in users:
+            users[user_]['team'] = team
+            utils.write_json_file(users, _users)
+            await interaction.response.send_message(f'{driver.display_name}\'s team changed to {team}.', ephemeral=True, delete_after=5)
+        else:
+            await interaction.response.send_message(f'{driver.display_name} ({driver.id}) is not registered.', ephemeral=True, delete_after=5)
 
 
 async def setup(bot):
