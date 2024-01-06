@@ -3,10 +3,10 @@ import os
 
 
 dotenv.load_dotenv()
-_DNE = ' does not exist as envvar'
-TOKEN = os.getenv('TOKEN', 'TOKEN' + _DNE)
-GUILD = os.getenv('GUILD', 'GUILD' + _DNE)
-LOGO = os.getenv('LOGO_URL', 'LOGO_URL' + _DNE)
+TOKEN = os.getenv('TOKEN')
+GUILD = os.getenv('GUILD')
+LOGO = os.getenv('LOGO_URL')
 LOG_DIR = os.getenv('LOG_DIR', './')
 ADMIN_CH = os.getenv('ADMIN_CH', 'admin')
-BROADCAST_ROLE = os.getenv('BROADCAST_ROLE_ID', 'BROADCAST_ROLE_ID' + _DNE)
+BROADCAST_ROLE = os.getenv('BROADCAST_ROLE_ID')
+ENTRY_FEE=os.getenv('ENTRY_FEE')
