@@ -11,12 +11,32 @@ from discord.ext import commands
 log = logging.getLogger('discord')
 _users = 'static/data/users.json'
 _overlay = 'static/data/overlay_roster.csv'
+_number = 'static/data/number_roster.csv'
 
 
 class Broadcast(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         log.info(f'{__name__} initializing')
         self.bot = bot
+
+    
+    @app_commands.command(description='Generates a roster for with driver divs, names, and numbers.')
+    @app_commands.default_permissions()
+    @commands.has_any_role(const.BROADCAST_ROLE)
+    async def number_roster(self, interaction: discord.Interaction) -> None:
+        users = utils.read_json_file(_users)
+        roster = [f'({users[user]["div"]}) {users[user]["pref_name"]},{users[user]["num"]}' for user in users]
+        roster.sort(key=lambda x: x.split()[1])
+        output = ''.join(f'{driver}\n' for driver in roster)[:-1]
+
+        with open(_number, 'w') as file:
+            file.write(output)
+        
+        with open(_number, 'rb') as file:
+            await interaction.response.send_message(file=discord.File(file, filename='number_roster.csv'), ephemeral=True)
+
+            if os.path.exists(_number):
+                os.remove(_number)
     
 
     @app_commands.command(description='Generates a roster for loading overlays.')
@@ -33,7 +53,7 @@ class Broadcast(commands.Cog):
             file.write(output)
         
         with open(_overlay, 'rb') as file:
-            await interaction.response.send_message(file=discord.File(file, filename='overlay_roster.txt'), ephemeral=True)
+            await interaction.response.send_message(file=discord.File(file, filename='overlay_roster.csv'), ephemeral=True)
             
             if os.path.exists(_overlay):
                 os.remove(_overlay)
@@ -51,6 +71,7 @@ class Broadcast(commands.Cog):
         )
         embed.set_thumbnail(url='attachment://bot-avatar.png')
         embed.add_field(name='/help_broadcast', value='Shows this message', inline=False)
+        embed.add_field(name='/number_roster', value='Generates a roster in "(DIV) Driver Name,number" format', inline=False)
         embed.add_field(name='/overlay_roster', value='Generates an overlay roster in "iRacing ID,division" format', inline=False)
         await interaction.response.send_message(embed=embed, file=file, ephemeral=True)
 
