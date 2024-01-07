@@ -20,7 +20,7 @@ class Schedule(commands.Cog):
     @app_commands.command(description='Get the season schedule.')
     async def schedule(self, interaction: discord.Interaction) -> None:
         schedule = utils.read_json_file(_schedule)
-        output = ''.join(f'{schedule[x]["date"]} - {schedule[x]["track"]}\n' for x in schedule)
+        output = ''.join(f'{schedule[x]["date"][:-3]} - {schedule[x]["track"]}\n' for x in schedule)
         await interaction.response.send_message(output[:-1], ephemeral=True)
     
 
@@ -30,10 +30,10 @@ class Schedule(commands.Cog):
         output = str()
 
         for race in schedule:
-            race_dt = datetime.strptime(schedule[race]['date'])
+            race_dt = datetime.strptime(schedule[race]['date'], '%m/%d/%y')
             
             if datetime.today() <= race_dt:
-                output = f'Next race is {schedule[race]["track"]} on {schedule[race]["date"]}'
+                output = f'Next race is **{schedule[race]["track"]}** on {schedule[race]["date"][:-3]}'
                 break
         
         if len(output) == 0:
