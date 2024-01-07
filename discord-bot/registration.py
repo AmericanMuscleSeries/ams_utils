@@ -36,7 +36,7 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
         await interaction.response.send_message(f'You are now registered. Please read the rules in #links-and-info. '
                                                 f'You can send your {const.ENTRY_FEE} entry fee to https://paypal.me/finnimcfinger?country.x=US&locale.x=en_US '
                                                 f'(friends and family preferred). You can modify your registration details via commands. '
-                                                f'use /help to see available commands.', ephemeral=True)
+                                                f'Use /help to see available commands.', ephemeral=True)
     
 
     async def verify_div(self, div: str, interaction: discord.Interaction):
