@@ -28,6 +28,8 @@ class Help(commands.Cog):
         embed.add_field(name='/name', value='Alter your preferred name', inline=False)
         embed.add_field(name='/number', value='Claim a number if it is available', inline=False)
         embed.add_field(name='/team', value='Alter your team', inline=False)
+        embed.add_field(name='/schedule', value='Display the season schedule', inline=False)
+        embed.add_field(name='/next_race', value='Display the track and date of the next race', inline=False)
 
         return embed, file
     
