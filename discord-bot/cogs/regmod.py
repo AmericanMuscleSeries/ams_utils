@@ -147,21 +147,54 @@ class RegistrationMod(commands.Cog):
                 for id in users:
                     user = users[str(id)]
 
-                    if int(id) == interaction.user.id and user['num'] == number:
-                        await interaction.response.send_message('You already have that number.', ephemeral= True)
-                        return
-                    else:
-                        leading_zero_change = True
-                    
-                    if int(user['num']) == int(number) and not leading_zero_change:
-                        await interaction.response.send_message(f'Sorry, that number is already taken. Please run the command again with another number.',ephemeral=True)
+                    if int(id) == interaction.user.id:
+                        pass
+                    elif int(user['num']) == int(number):
+                        await interaction.response.send_message(f'Sorry, that number is already taken. Please run the command again with another number.',
+                                                                ephemeral=True)
                         return
                 
-                users[str(interaction.user.id)]['num'] = number[-2:] if users[str(interaction.user.id)]['div'] == 'PRO' else number[-3:]
-                
+                users[str(interaction.user.id)]['num'] = number[-2:] if users[str(interaction.user.id)]['div'] == 'PRO' else number[-3:]                
                 utils.write_json_file(users, _users)
-
                 await interaction.response.send_message(f'Your number has been set to {number}.', ephemeral=True)
+    
+
+    @app_commands.command(description='Claim a number if it is available.')
+    @app_commands.describe(number='The number you wish to set.', member='The member whose number you wish to alter or set.')
+    @app_commands.default_permissions()
+    @commands.is_owner()
+    async def set_number(self, interaction: discord.Interaction, member: discord.Member, number: str) -> None:
+        try:
+            int(number)
+        except ValueError as e:
+            interaction.response.send_message(f'{number} is not a valid number. Please run the command again with a number. '
+                                              f'PRO numbers run from 2-99 (leading 0s are OK). AM numbers run from 100-199.',
+                                              ephemeral=True)
+        
+        driver = self.get_user_info(member)
+
+        if driver:
+            if driver['div'] == 'PRO' and not 1 < int(number) < 100:
+                await interaction.response.send_message(f'{number} is not valid for {member.display_name}. PRO numbers run from 2-99. Leading 0s are ok.',
+                                                        ephemeral=True)
+            elif driver['div'] == 'AM' and not 100 <= int(number) < 200:
+                await interaction.response.send_message(f'{number} is not valid for {member.display_name}. AM numbers run from 100-199.', ephemeral=True)
+            else:
+                users = utils.read_json_file(_users)
+
+                for id in users:
+                    user = users[str(id)]
+
+                    if int(id) == member.id:
+                        pass
+                    elif int(user['num']) == int(number):
+                        await interaction.response.send_message(f'Sorry, that number is already taken. Please run the command again with another number.',
+                                                                ephemeral=True)
+                        return
+                
+                users[str(member.id)]['num'] = number[-2:] if users[str(member.id)]['div'] == 'PRO' else number[-3:]                
+                utils.write_json_file(users, _users)
+                await interaction.response.send_message(f'{member.display_name}\'s number has been set to {number}.', ephemeral=True)
     
 
     @app_commands.command(description='Process a driver\'s payment. (requires permissions)')
