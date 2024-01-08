@@ -53,3 +53,37 @@ For example:
 677234,PRO
 12343,AM
 ```
+
+## Admin Commands
+### !sync
+Syncs all slash commands globally.
+
+### /clear
+Clears the given number of messages (most recent) from the channel. If `year month day` is passed instead, it clears all messages from the channel from that date onward.
+
+### /alter_name
+Alters a driver's preferred name.
+
+### /alter_team
+Alters a driver's team.
+
+### /division
+Sets a driver's division.
+
+### /helpp
+Displays the contents of `/help` in a public embed.
+
+### /payment
+Processes a driver's payment. When a driver registers, they are given the `unpaid` role. This removes that role.
+
+### /reginfo
+Displays the registration info for a given driver in an ephemeral response.
+
+### /registrations
+Downloads `./static/data/users.json`
+
+### /reload
+Reloads an extension (cog) by name.
+
+### /set_number
+Sets a driver's number. This command performs similar logic to when a driver uses `/number`.
