@@ -244,6 +244,17 @@ class RegistrationMod(commands.Cog):
             await interaction.response.send_message(f'{driver.display_name}\'s team changed to {team}.', ephemeral=True, delete_after=5)
         else:
             await interaction.response.send_message(f'{driver.display_name} ({driver.id}) is not registered.', ephemeral=True, delete_after=5)
+    
+
+    @app_commands.command(description='Alert driver that invite has been sent.')
+    @app_commands.describe(driver='The driver who has been invited.')
+    @app_commands.default_permissions()
+    @commands.is_owner()
+    async def invite(self, interaction: discord.Interaction, driver: discord.Member):
+        help = 'https://discord.com/channels/916828519487656007/1025052192815718430/1025054772404944986'
+        await driver.send(f'Your league invite has been sent! Be sure to use /number to claim your number if you haven\'t already. '
+                          f'If you have problems finding it, please refer to: {help}')
+        await interaction.response.send_message(f'{driver.display_name} has been notified of invitation.', ephemeral=True, delete_after=5)
 
 
 async def setup(bot):
