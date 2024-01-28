@@ -1,3 +1,4 @@
+import constants as const
 import discord
 import logging
 import utils
@@ -118,7 +119,8 @@ class RegistrationMod(commands.Cog):
         if user_ in users:
             users[user_]['pref_name'] = name
             await utils.set_nick(interaction, name)
-            utils.write_json_file(users, _users)
+            utils.write_json_file(users, _users)            
+            await utils.admin_log(interaction.guild, f'/name called by {interaction.user.nick}')
             await interaction.response.send_message(f'Your preferred name updated to {name}.', ephemeral=True)
         else:
             await interaction.response.send_message('You are not registered. Use the /register command if you wish to drive in the league.', ephemeral=True)
@@ -156,6 +158,7 @@ class RegistrationMod(commands.Cog):
                 
                 users[str(interaction.user.id)]['num'] = number[-2:] if users[str(interaction.user.id)]['div'] == 'PRO' else number[-3:]                
                 utils.write_json_file(users, _users)
+                await utils.admin_log(interaction.guild, f'/number called by {interaction.user.nick}')
                 await interaction.response.send_message(f'Your number has been set to {number}.', ephemeral=True)
     
 
@@ -224,6 +227,7 @@ class RegistrationMod(commands.Cog):
         if user_ in users:
             users[user_]['team'] = team
             utils.write_json_file(users, _users)
+            await utils.admin_log(interaction.guild, f'/team called by {interaction.user.nick}')
             await interaction.response.send_message(f'Your team name has been changed to {team}.', ephemeral=True)
         else:
             await interaction.response.send_message(f'You are not currently registered. Please use the `/register` command to register if you wish to drive.',

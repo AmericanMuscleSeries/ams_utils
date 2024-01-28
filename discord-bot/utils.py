@@ -28,3 +28,8 @@ async def set_nick(interaction: discord.Interaction, nick: str):
         admin_ch = discord.utils.get(interaction.guild.channels, name=const.ADMIN_CH)
         await admin_ch.send(f'Invalid nick entered for {interaction.user.id} ({interaction.user.display_name}): {nick}')
         log.error(f'Invalid nick entered for {interaction.user.id} ({interaction.user.display_name}): {nick}', e)
+
+
+async def admin_log(guild: discord.Guild, message: str) -> None:
+    channel = discord.utils.get(guild.channels, name=const.ADMIN_CH)
+    await channel.send(message)
