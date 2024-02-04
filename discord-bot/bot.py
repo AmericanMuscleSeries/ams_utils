@@ -96,8 +96,10 @@ async def register(interaction: discord.Interaction):
     if user_ in users:
         log.info(f'{interaction.user.display_name} attempted to register, but is already registered ({users[user_]})')
         await interaction.response.send_message('You are already registered.', ephemeral=True)
-    else:
+    elif const.REG_OPEN:
         await interaction.response.send_modal(RegistrationModal())
+    else:
+        await interaction.response.send_message('I\'m sorry, but registration is currently closed. Please keep an eye out for next season\'s registration.')
 
 
 @client.tree.command(description='Clear messages from this channel.')
