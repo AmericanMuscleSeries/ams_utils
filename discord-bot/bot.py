@@ -97,7 +97,11 @@ async def register(interaction: discord.Interaction):
         log.info(f'{interaction.user.display_name} attempted to register, but is already registered ({users[user_]})')
         await interaction.response.send_message('You are already registered.', ephemeral=True)
     elif const.REG_OPEN:
-        await interaction.response.send_modal(RegistrationModal())
+        if can_register_now(interaction.user):
+            await interaction.response.send_modal(RegistrationModal())
+        else:
+            await interaction.resposne.send_message(f'Registration is currently only open for season 6 drivers. An announcement will be posted soon '
+                                                    f'when registration opens for everyone else.')
     else:
         await interaction.response.send_message('I\'m sorry, but registration is currently closed. Please keep an eye out for next season\'s registration.')
 
@@ -109,6 +113,13 @@ async def clear(interaction: discord.Interaction, amount: str, month: int = None
     has_date = month is not None and day is not None and year is not None
     date = datetime(year, month, day) if has_date else None
     await interaction.channel.purge(limit=limit, after=date)
+
+
+def can_register_now(user: discord.User) -> bool:
+    if const.REG_OPEN_FOR == 'all' or 'season 6' in [role.name for role in user.roles]:
+        return True
+    else:
+        return False
 
 
 client.remove_command('help')
