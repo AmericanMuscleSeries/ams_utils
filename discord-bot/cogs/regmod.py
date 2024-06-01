@@ -127,7 +127,7 @@ class RegistrationMod(commands.Cog):
     
 
     @app_commands.command(description='Claim a number if it is available.')
-    @app_commands.describe(number='The number you wish to claim. PRO numbers run from 2-99 (leading 0s are OK). AM numbers run from 100-199.')
+    @app_commands.describe(number='The number you wish to claim. PRO numbers run from 2-99 (leading 0s are OK). CH numbers run from 100-199.')
     async def number(self, interaction: discord.Interaction, number: str):
         try:
             int(number)
@@ -141,8 +141,10 @@ class RegistrationMod(commands.Cog):
         if driver:
             if driver['div'] == 'PRO' and not 1 < int(number) < 100:
                 await interaction.response.send_message(f'{number} is not valid for you. PRO numbers run from 2-99. Leading 0s are ok.', ephemeral=True)
-            elif driver['div'] == 'AM' and not 100 <= int(number) < 200:
+            elif driver['div'] == 'CH' and not 100 <= int(number) < 200:
                 await interaction.response.send_message(f'{number} is not valid for you. AM numbers run from 100-199.', ephemeral=True)
+            elif driver['div'] == 'AM':
+                await interaction.response.send_message('AM drivers do not require a number to be set.', ephemeral=True)
             else:
                 users = utils.read_json_file(_users)
 
@@ -180,8 +182,10 @@ class RegistrationMod(commands.Cog):
             if driver['div'] == 'PRO' and not 1 < int(number) < 100:
                 await interaction.response.send_message(f'{number} is not valid for {member.display_name}. PRO numbers run from 2-99. Leading 0s are ok.',
                                                         ephemeral=True)
-            elif driver['div'] == 'AM' and not 100 <= int(number) < 200:
+            elif driver['div'] == 'CH' and not 100 <= int(number) < 200:
                 await interaction.response.send_message(f'{number} is not valid for {member.display_name}. AM numbers run from 100-199.', ephemeral=True)
+            elif driver['div'] == 'AM':
+                await interaction.response.send_message('AM drivers do not require a number to be set.', ephemeral=True)
             else:
                 users = utils.read_json_file(_users)
 
