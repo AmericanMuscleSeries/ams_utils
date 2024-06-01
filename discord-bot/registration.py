@@ -12,7 +12,7 @@ _divs = ['PRO', 'CH', 'AM']
 class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
     _ir_id_ = discord.ui.TextInput(label='iRacing ID', placeholder='123456', required=True, style=discord.TextStyle.short)
     _pref_name_ = discord.ui.TextInput(label='What is your preferred full name?', placeholder='Marty McFly', required=True, style=discord.TextStyle.short)
-    _div_ = discord.ui.TextInput(label='Which division are you entering? (PRO, CH, or AM)', placeholder='PRO, CH, or AM', required=True,
+    _div_ = discord.ui.TextInput(label='Which division? (PRO, CH, or AM)', placeholder='PRO, CH, or AM', required=True,
                                  style=discord.TextStyle.short)
     _team_ = discord.ui.TextInput(label='What team will you race for? (optional)', placeholder='Privateer', required=False, style=discord.TextStyle.short)
     _loc_ = discord.ui.TextInput(label='Where are you located? (optional)', placeholder='Parts Unknown', required=False, style=discord.TextStyle.short)
