@@ -45,6 +45,8 @@ async def reload(interaction: discord.Interaction, extension: Optional[str] = '*
         for filename in os.listdir('./cogs'):
             if filename.endswith('.py'):
                 await client.reload_extension(f'cogs.{filename[:-3]}')
+    elif extension == 'cofig':
+        reload(const)
     else:
         await client.reload_extension(f'cogs.{extension}')
     
