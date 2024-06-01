@@ -103,9 +103,9 @@ async def register(interaction: discord.Interaction):
             await interaction.response.send_modal(RegistrationModal())
         else:
             await interaction.resposne.send_message(f'Registration is currently only open for season 6 drivers. An announcement will be posted soon '
-                                                    f'when registration opens for everyone else.')
+                                                    f'when registration opens for everyone else.', ephemeral=True)
     else:
-        await interaction.response.send_message('I\'m sorry, but registration is currently closed. Please keep an eye out for next season\'s registration.')
+        await interaction.response.send_message('I\'m sorry, but registration is currently closed. Please keep an eye out for next season\'s registration.', ephemeral=True)
 
 
 @client.tree.command(description='Clear messages from this channel.')
