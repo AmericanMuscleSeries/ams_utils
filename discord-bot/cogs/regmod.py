@@ -133,7 +133,7 @@ class RegistrationMod(commands.Cog):
             int(number)
         except ValueError as e:
             interaction.response.send_message(f'{number} is not a valid number. Please run the command again with a number. '
-                                              f'PRO numbers run from 2-99 (leading 0s are OK). AM numbers run from 100-199.',
+                                              f'PRO numbers run from 2-99 (leading 0s are OK). CH numbers run from 100-199.',
                                               ephemeral=True)
         
         driver = self.get_user_info(interaction.user)
@@ -142,7 +142,7 @@ class RegistrationMod(commands.Cog):
             if driver['div'] == 'PRO' and not 1 < int(number) < 100:
                 await interaction.response.send_message(f'{number} is not valid for you. PRO numbers run from 2-99. Leading 0s are ok.', ephemeral=True)
             elif driver['div'] == 'CH' and not 100 <= int(number) < 200:
-                await interaction.response.send_message(f'{number} is not valid for you. AM numbers run from 100-199.', ephemeral=True)
+                await interaction.response.send_message(f'{number} is not valid for you. CH numbers run from 100-199.', ephemeral=True)
             elif driver['div'] == 'AM':
                 await interaction.response.send_message('AM drivers do not require a number to be set.', ephemeral=True)
             else:
@@ -183,7 +183,7 @@ class RegistrationMod(commands.Cog):
                 await interaction.response.send_message(f'{number} is not valid for {member.display_name}. PRO numbers run from 2-99. Leading 0s are ok.',
                                                         ephemeral=True)
             elif driver['div'] == 'CH' and not 100 <= int(number) < 200:
-                await interaction.response.send_message(f'{number} is not valid for {member.display_name}. AM numbers run from 100-199.', ephemeral=True)
+                await interaction.response.send_message(f'{number} is not valid for {member.display_name}. CH numbers run from 100-199.', ephemeral=True)
             elif driver['div'] == 'AM':
                 await interaction.response.send_message('AM drivers do not require a number to be set.', ephemeral=True)
             else:
