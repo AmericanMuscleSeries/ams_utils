@@ -19,6 +19,8 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
 
 
     async def on_submit(self, interaction: discord.Interaction):
+        rules = 'https://discord.com/channels/916828519487656007/1025052192815718430/1193226323791990784'
+        payment = 'https://discord.com/channels/916828519487656007/1025052192815718430/1193304565697740860'
         users = utils.read_json_file(_users)
         user_ = str(interaction.user.id)
         users[user_] = {}
@@ -34,9 +36,10 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
         await utils.set_nick(interaction, str(self._pref_name_))
         utils.write_json_file(users,_users)
         await utils.admin_log(interaction.guild, f'/register called by {interaction.user.name}')
-        await interaction.response.send_message(f'You are now on the registered. Please read the rules in #links-and-info. '
+        await interaction.response.send_message(f'You are now on the registered. Please read the rules {rules}. '
                                                 f'You can modify your registration details via commands. '
                                                 f'If you are PRO or CH, use /number to select your number. '
+                                                f'You can see payment info for your entry fee here: {payment}. '
                                                 f'Use `/help` to see available commands.', ephemeral=True)
     
 
