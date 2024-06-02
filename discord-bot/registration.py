@@ -19,6 +19,8 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
 
 
     async def on_submit(self, interaction: discord.Interaction):
+        good_div = await self.verify_div(str(self._div_), interaction)
+
         if good_div:
             rules = 'https://discord.com/channels/916828519487656007/1025052192815718430/1193226323791990784'
             payment = 'https://discord.com/channels/916828519487656007/1025052192815718430/1193304565697740860'
@@ -31,8 +33,7 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
             users[user_]['loc'] = str(self._loc_)
             users[user_]['div'] = str(self._div_).upper()
             users[user_]['num'] = '0'
-            log.info(f'registration received: {users[user_]}')
-            good_div = await self.verify_div(str(self._div_), interaction)        
+            log.info(f'registration received: {users[user_]}')      
             await self.set_role(str(self._div_), interaction.user, interaction)
             await utils.set_nick(interaction, str(self._pref_name_))
             utils.write_json_file(users,_users)
@@ -43,7 +44,7 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
                                                     f'You can see payment info for your entry fee here: {payment}. '
                                                     f'Use `/help` to see available commands.', ephemeral=True)
         else:
-            await interaction.response.send_message(f'Please try again and only enter PRO, CH, or AM in the division space. You entered: {self._div_}')
+            await interaction.response.send_message(f'Please try again and only enter PRO, CH, or AM in the division space. You entered: {self._div_}', ephemeral=True)
     
 
     async def verify_div(self, div: str, interaction: discord.Interaction) -> bool:
