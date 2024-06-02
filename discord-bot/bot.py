@@ -102,7 +102,7 @@ async def register(interaction: discord.Interaction):
         if can_register_now(interaction.user):
             await interaction.response.send_modal(RegistrationModal())
         else:
-            await interaction.resposne.send_message(f'Registration is currently only open for season 6 drivers. An announcement will be posted soon '
+            await interaction.response.send_message(f'Registration is currently only open for season 6 drivers. An announcement will be posted soon '
                                                     f'when registration opens for everyone else.', ephemeral=True)
     else:
         await interaction.response.send_message('I\'m sorry, but registration is currently closed. Please keep an eye out for next season\'s registration.', ephemeral=True)
