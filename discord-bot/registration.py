@@ -53,6 +53,7 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
         for _div in _divs:
             if div.upper() == _div:
                 div_role = discord.utils.get(interaction.guild.roles, name=_div)
+                log.info(f'registration adding division role with name {div_role}')
                 await member.add_roles(div_role)
         
         driver_role = discord.utils.get(interaction.guild.roles, name='drivers')
