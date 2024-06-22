@@ -127,13 +127,14 @@ class RegistrationMod(commands.Cog):
     
 
     @app_commands.command(description='Claim a number if it is available.')
-    @app_commands.describe(number='The number you wish to claim. PRO numbers run from 2-99 (leading 0s are OK). CH numbers run from 100-199.')
+    @app_commands.describe(number='The number you wish to claim. PRO numbers run from 2-99 (leading 0s are OK). CH numbers run from 100-199. AM numbers run from 200-299.')
     async def number(self, interaction: discord.Interaction, number: str):
         try:
             int(number)
         except ValueError as e:
             interaction.response.send_message(f'{number} is not a valid number. Please run the command again with a number. '
-                                              f'PRO numbers run from 2-99 (leading 0s are OK). CH numbers run from 100-199.',
+                                              f'PRO numbers run from 2-99 (leading 0s are OK). CH numbers run from 100-199. '
+                                              f'AM numbers run from 200-299.',
                                               ephemeral=True)
         
         driver = self.get_user_info(interaction.user)
@@ -143,8 +144,8 @@ class RegistrationMod(commands.Cog):
                 await interaction.response.send_message(f'{number} is not valid for you. PRO numbers run from 2-99. Leading 0s are ok.', ephemeral=True)
             elif driver['div'] == 'CH' and not 100 <= int(number) < 200:
                 await interaction.response.send_message(f'{number} is not valid for you. CH numbers run from 100-199.', ephemeral=True)
-            elif driver['div'] == 'AM':
-                await interaction.response.send_message('AM drivers do not require a number to be set.', ephemeral=True)
+            elif driver['div'] == 'AM' and not 200 <= int(number) < 300:
+                await interaction.response.send_message(f'{number} is not valid for you. AM numbers run from 200-299.', ephemeral=True)
             else:
                 users = utils.read_json_file(_users)
 
@@ -164,7 +165,7 @@ class RegistrationMod(commands.Cog):
                 await interaction.response.send_message(f'Your number has been set to {number}.', ephemeral=True)
     
 
-    @app_commands.command(description='Claim a number if it is available.')
+    @app_commands.command(description='Set the number for a driver if it is available.')
     @app_commands.describe(number='The number you wish to set.', member='The member whose number you wish to alter or set.')
     @app_commands.default_permissions()
     @commands.is_owner()
@@ -173,7 +174,8 @@ class RegistrationMod(commands.Cog):
             int(number)
         except ValueError as e:
             interaction.response.send_message(f'{number} is not a valid number. Please run the command again with a number. '
-                                              f'PRO numbers run from 2-99 (leading 0s are OK). AM numbers run from 100-199.',
+                                              f'PRO numbers run from 2-99 (leading 0s are OK). AM numbers run from 100-199. '
+                                              f'AM numbers run from 200-299',
                                               ephemeral=True)
         
         driver = self.get_user_info(member)
@@ -184,8 +186,8 @@ class RegistrationMod(commands.Cog):
                                                         ephemeral=True)
             elif driver['div'] == 'CH' and not 100 <= int(number) < 200:
                 await interaction.response.send_message(f'{number} is not valid for {member.display_name}. CH numbers run from 100-199.', ephemeral=True)
-            elif driver['div'] == 'AM':
-                await interaction.response.send_message('AM drivers do not require a number to be set.', ephemeral=True)
+            elif driver['div'] == 'AM' and not 200 <= int(number) < 300:
+                await interaction.response.send_message(f'{number} is not valid for {member.display_name}. AM numbers run from 200-299.', ephemeral=True)
             else:
                 users = utils.read_json_file(_users)
 
