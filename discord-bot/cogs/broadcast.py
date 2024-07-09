@@ -47,7 +47,9 @@ class Broadcast(commands.Cog):
         output = ''
 
         for user in users:
-            output = output + f'{users[user]["iracing_id"]},{users[user]["div"]}\n' if users[user]['div'] is not None else ''
+            div = users[user]['div']
+            color = '#2b0691' if div == 'CH' else '#910606' if div == 'AM' else '#000000' 
+            output = output + f'{users[user]["iracing_id"]},{color}\n'
         
         with open(_overlay, 'w') as file:
             file.write(output)
