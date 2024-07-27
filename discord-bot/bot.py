@@ -4,7 +4,6 @@ import logging
 import os
 import utils
 
-from datetime import datetime
 from discord.ext import commands
 from registration import RegistrationModal
 from typing import Literal, Optional
@@ -106,15 +105,6 @@ async def register(interaction: discord.Interaction):
                                                     f'when registration opens for everyone else.', ephemeral=True)
     else:
         await interaction.response.send_message('I\'m sorry, but registration is currently closed. Please keep an eye out for next season\'s registration.', ephemeral=True)
-
-
-@client.tree.command(description='Clear messages from this channel.')
-@commands.is_owner()
-async def clear(interaction: discord.Interaction, amount: str, month: int = None, day: int = None, year: int = None):
-    limit = int(amount) if amount.isdigit() else None
-    has_date = month is not None and day is not None and year is not None
-    date = datetime(year, month, day) if has_date else None
-    await interaction.channel.purge(limit=limit, after=date)
 
 
 def can_register_now(user: discord.User) -> bool:
