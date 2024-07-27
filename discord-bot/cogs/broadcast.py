@@ -67,7 +67,7 @@ class Broadcast(commands.Cog):
         )
         embed.set_thumbnail(url='attachment://bot-avatar.png')
         embed.add_field(name='/help_broadcast', value='Shows this message', inline=False)
-        embed.add_field(name='/number_roster', value='Generates a roster in "(DIV) Driver Name,number" format', inline=False)
+        embed.add_field(name='/number_roster', value='Generates a roster in "(DIV) Driver Name,hex-code" format', inline=False)
         embed.add_field(name='/overlay_roster', value='Generates an overlay roster in "iRacing ID,division" format', inline=False)
         await interaction.response.send_message(embed=embed, file=file, ephemeral=True)
 
