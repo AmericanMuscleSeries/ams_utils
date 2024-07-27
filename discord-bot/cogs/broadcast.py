@@ -22,7 +22,7 @@ class Broadcast(commands.Cog):
     
     @app_commands.command(description='Generates a roster for with driver divs, names, and numbers.')
     @app_commands.default_permissions()
-    @app_commands.checks.has_any_role(1192260514466762833)
+    @app_commands.checks.has_role(1192260514466762833)
     async def number_roster(self, interaction: discord.Interaction) -> None:
         users = utils.read_json_file(_users)
         roster = [f'({users[user]["div"]}){users[user]["pref_name"]},{users[user]["num"]}' for user in users]
@@ -41,7 +41,7 @@ class Broadcast(commands.Cog):
 
     @app_commands.command(description='Generates a roster for loading overlays.')
     @app_commands.default_permissions()
-    @app_commands.checks.has_any_role(1192260514466762833)
+    @app_commands.checks.has_role(1192260514466762833)
     async def overlay_roster(self, interaction: discord.Interaction) -> None:
         users = utils.read_json_file(_users)
         output = ''
@@ -63,7 +63,7 @@ class Broadcast(commands.Cog):
 
     @app_commands.command(description='Generates a roster for loading overlays.')
     @app_commands.default_permissions()
-    @app_commands.checks.has_any_role(1192260514466762833)
+    @app_commands.checks.has_role(1192260514466762833)
     async def help_broadcast(self, interaction: discord.Interaction) -> None:
         file = discord.File('static/img/bot-avatar.png', filename='bot-avatar.png')
         embed = discord.Embed(
