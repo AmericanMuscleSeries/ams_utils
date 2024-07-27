@@ -57,7 +57,7 @@ class Broadcast(commands.Cog):
                 os.remove(_overlay)
     
 
-    @app_commands.command(description='Generates a roster for loading overlays.')
+    @app_commands.command(description='Generates help menu for broadcast roles.')
     async def help_broadcast(self, interaction: discord.Interaction) -> None:
         file = discord.File('static/img/bot-avatar.png', filename='bot-avatar.png')
         embed = discord.Embed(
