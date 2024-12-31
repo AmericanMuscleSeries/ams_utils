@@ -45,9 +45,17 @@ class Broadcast(commands.Cog):
         output = ''
 
         for user in users:
-            div = users[user]['div']
-            color = '#2b0691' if div == 'CH' else '#910606' if div == 'AM' else '#000000' 
-            output = output + f'{users[user]["iracing_id"]},{color}\n'
+            user_ = users[user]
+            line = ''
+            line = line + f'{user_["pref_name"]},{user_["iracing_id"]}'
+            line = line + ',Transparent,Transparent,Transparent,Transparent,'
+            tokens = user_['pref_name'].split(maxsplit=2)
+            num_tokens = len(tokens)
+            line = line + f'{tokens[0]},{tokens[1]},{tokens[2] if num_tokens > 2 else ""}'
+            line = line + ',,,None,None,,,,'
+            line = line + f'{user_["div"]}'
+            line = line + ',None,None,,,,'
+            output = output + line + '\n'
         
         with open(_overlay, 'w') as file:
             file.write(output)
@@ -70,8 +78,8 @@ class Broadcast(commands.Cog):
         )
         embed.set_thumbnail(url='attachment://bot-avatar.png')
         embed.add_field(name='/help_broadcast', value='Shows this message', inline=False)
-        embed.add_field(name='/number_roster', value='Generates a roster in "(DIV) Driver Name,hex-code" format', inline=False)
-        embed.add_field(name='/overlay_roster', value='Generates an overlay roster in "iRacing ID,division" format', inline=False)
+        embed.add_field(name='/number_roster', value='Generates a roster in SDK points format without the points values', inline=False)
+        embed.add_field(name='/overlay_roster', value='Generates an overlay roster in SDK format', inline=False)
         await interaction.response.send_message(embed=embed, file=file, ephemeral=True)
 
     
