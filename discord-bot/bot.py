@@ -93,6 +93,7 @@ async def sync(ctx: commands.Context, guilds: commands.Greedy[discord.Object], s
 async def register(interaction: discord.Interaction):
     users = utils.read_json_file(_users)
     user_ = str(interaction.user.id)
+    log.info(f'registration attempt by {interaction.user.display_name}')
 
     if user_ in users:
         log.info(f'{interaction.user.display_name} attempted to register, but is already registered ({users[user_]})')
