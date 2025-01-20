@@ -105,6 +105,7 @@ class RegistrationMod(commands.Cog):
             users[user_]['pref_name'] = name
             await driver.edit(nick=name)
             utils.write_json_file(users, _users)
+            await utils.update_roster(interaction.guild)
             await interaction.response.send_message(f'Driver {driver.id} preferred name updated to {name}.', ephemeral=True)
         else:
             await interaction.response.send_message(f'{driver.display_name} is not registered.', ephemeral=True)
@@ -119,7 +120,8 @@ class RegistrationMod(commands.Cog):
         if user_ in users:
             users[user_]['pref_name'] = name
             await utils.set_nick(interaction, name)
-            utils.write_json_file(users, _users)            
+            utils.write_json_file(users, _users)
+            await utils.update_roster(interaction.guild)
             await utils.admin_log(interaction.guild, f'/name called by {interaction.user.name}')
             await interaction.response.send_message(f'Your preferred name updated to {name}.', ephemeral=True)
         else:

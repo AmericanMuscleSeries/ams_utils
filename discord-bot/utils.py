@@ -5,6 +5,7 @@ import logging
 
 
 log = logging.getLogger('discord')
+_users = 'static/data/users.json'
 
 
 def read_json_file(file_path: str) -> dict:
@@ -33,3 +34,21 @@ async def set_nick(interaction: discord.Interaction, nick: str):
 async def admin_log(guild: discord.Guild, message: str) -> None:
     channel = discord.utils.get(guild.channels, name=const.ADMIN_CH)
     await channel.send(message)
+
+
+async def update_roster(guild: discord.Guild) -> None:
+    channel = discord.utils.get(guild.channels, name=const.INFO_CH)
+    msg_id = const.ROSTER_MSG_ID
+    drivers = read_json_file(_users)
+
+    if not int(msg_id):
+        log.info('initializing roster')
+        prompt = await channel.send('roster loading...')
+        log.info(f'roster initialized, message {prompt.id}')
+        msg_id = prompt.id
+
+    roster = [f'{drivers[d]["num"]} - {drivers[d]["pref_name"]} ({drivers[d]["div"]})' for d in drivers]
+    roster.sort(key=lambda d: int(d.split()[0]))
+    output = 'Season 8 roster:\n' + ''.join(f'> {entry}\n' for entry in roster)
+    roster_message = await channel.fetch_message(msg_id)
+    await roster_message.edit(content=f'{output}')
