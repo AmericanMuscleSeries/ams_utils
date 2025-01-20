@@ -37,6 +37,7 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
             await self.set_role(str(self._div_), interaction.user, interaction)
             await utils.set_nick(interaction, str(self._pref_name_))
             utils.write_json_file(users,_users)
+            await utils.update_roster(interaction.guild)
             await utils.admin_log(interaction.guild, f'/register called by {interaction.user.name}')
             await interaction.response.send_message(f'You are now on the registered. Please read the rules {rules}. '
                                                     f'You can modify your registration details via commands. '
