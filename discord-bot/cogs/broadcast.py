@@ -24,7 +24,7 @@ class Broadcast(commands.Cog):
     @commands.has_role(1192260514466762833)
     async def number_roster(self, interaction: discord.Interaction) -> None:
         users = utils.read_json_file(_users)
-        roster = [f'({users[user]["div"]}){users[user]["pref_name"]},{users[user]["num"]}' for user in users]
+        roster = [f'({users[user]["div"]}) {users[user]["pref_name"]},{users[user]["num"]}' for user in users]
         roster.sort(key=lambda x: x.split()[1])
         output = ''.join(f'{driver}\n' for driver in roster)[:-1]
 
