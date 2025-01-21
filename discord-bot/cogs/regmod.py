@@ -1,3 +1,4 @@
+import constants as const
 import discord
 import logging
 import utils
@@ -87,6 +88,7 @@ class RegistrationMod(commands.Cog):
             await driver.add_roles(new_role)
             users[user]['div'] = division.upper()
             utils.write_json_file(users, _users)
+            await utils.update_roster(interaction.guild)
             await interaction.response.send_message(f'{driver.display_name} division updated to {division}', ephemeral=True)
         else:
             await interaction.response.send_message(f'{driver.display_name} not registered.', ephemeral=True)
@@ -104,6 +106,7 @@ class RegistrationMod(commands.Cog):
             users[user_]['pref_name'] = name
             await driver.edit(nick=name)
             utils.write_json_file(users, _users)
+            await utils.update_roster(interaction.guild)
             await interaction.response.send_message(f'Driver {driver.id} preferred name updated to {name}.', ephemeral=True)
         else:
             await interaction.response.send_message(f'{driver.display_name} is not registered.', ephemeral=True)
@@ -119,19 +122,22 @@ class RegistrationMod(commands.Cog):
             users[user_]['pref_name'] = name
             await utils.set_nick(interaction, name)
             utils.write_json_file(users, _users)
+            await utils.update_roster(interaction.guild)
+            await utils.admin_log(interaction.guild, f'/name called by {interaction.user.name}')
             await interaction.response.send_message(f'Your preferred name updated to {name}.', ephemeral=True)
         else:
             await interaction.response.send_message('You are not registered. Use the /register command if you wish to drive in the league.', ephemeral=True)
     
 
     @app_commands.command(description='Claim a number if it is available.')
-    @app_commands.describe(number='The number you wish to claim. PRO numbers run from 2-99 (leading 0s are OK). AM numbers run from 100-199.')
+    @app_commands.describe(number='The number you wish to claim. PRO numbers run from 2-99 (leading 0s are OK). CH numbers run from 100-199. AM numbers run from 200-299.')
     async def number(self, interaction: discord.Interaction, number: str):
         try:
             int(number)
         except ValueError as e:
             interaction.response.send_message(f'{number} is not a valid number. Please run the command again with a number. '
-                                              f'PRO numbers run from 2-99 (leading 0s are OK). AM numbers run from 100-199.',
+                                              f'PRO numbers run from 2-99 (leading 0s are OK). CH numbers run from 100-199. '
+                                              f'AM numbers run from 200-299.',
                                               ephemeral=True)
         
         driver = self.get_user_info(interaction.user)
@@ -139,8 +145,10 @@ class RegistrationMod(commands.Cog):
         if driver:
             if driver['div'] == 'PRO' and not 1 < int(number) < 100:
                 await interaction.response.send_message(f'{number} is not valid for you. PRO numbers run from 2-99. Leading 0s are ok.', ephemeral=True)
-            elif driver['div'] == 'AM' and not 100 <= int(number) < 200:
-                await interaction.response.send_message(f'{number} is not valid for you. AM numbers run from 100-199.', ephemeral=True)
+            elif driver['div'] == 'CH' and not 100 <= int(number) < 200:
+                await interaction.response.send_message(f'{number} is not valid for you. CH numbers run from 100-199.', ephemeral=True)
+            elif driver['div'] == 'AM' and not 200 <= int(number) < 300:
+                await interaction.response.send_message(f'{number} is not valid for you. AM numbers run from 200-299.', ephemeral=True)
             else:
                 users = utils.read_json_file(_users)
 
@@ -156,10 +164,12 @@ class RegistrationMod(commands.Cog):
                 
                 users[str(interaction.user.id)]['num'] = number[-2:] if users[str(interaction.user.id)]['div'] == 'PRO' else number[-3:]                
                 utils.write_json_file(users, _users)
+                await utils.update_roster(interaction.guild)
+                await utils.admin_log(interaction.guild, f'/number called by {interaction.user.name}')
                 await interaction.response.send_message(f'Your number has been set to {number}.', ephemeral=True)
     
 
-    @app_commands.command(description='Claim a number if it is available.')
+    @app_commands.command(description='Set the number for a driver if it is available.')
     @app_commands.describe(number='The number you wish to set.', member='The member whose number you wish to alter or set.')
     @app_commands.default_permissions()
     @commands.is_owner()
@@ -168,7 +178,8 @@ class RegistrationMod(commands.Cog):
             int(number)
         except ValueError as e:
             interaction.response.send_message(f'{number} is not a valid number. Please run the command again with a number. '
-                                              f'PRO numbers run from 2-99 (leading 0s are OK). AM numbers run from 100-199.',
+                                              f'PRO numbers run from 2-99 (leading 0s are OK). AM numbers run from 100-199. '
+                                              f'AM numbers run from 200-299',
                                               ephemeral=True)
         
         driver = self.get_user_info(member)
@@ -177,8 +188,10 @@ class RegistrationMod(commands.Cog):
             if driver['div'] == 'PRO' and not 1 < int(number) < 100:
                 await interaction.response.send_message(f'{number} is not valid for {member.display_name}. PRO numbers run from 2-99. Leading 0s are ok.',
                                                         ephemeral=True)
-            elif driver['div'] == 'AM' and not 100 <= int(number) < 200:
-                await interaction.response.send_message(f'{number} is not valid for {member.display_name}. AM numbers run from 100-199.', ephemeral=True)
+            elif driver['div'] == 'CH' and not 100 <= int(number) < 200:
+                await interaction.response.send_message(f'{number} is not valid for {member.display_name}. CH numbers run from 100-199.', ephemeral=True)
+            elif driver['div'] == 'AM' and not 200 <= int(number) < 300:
+                await interaction.response.send_message(f'{number} is not valid for {member.display_name}. AM numbers run from 200-299.', ephemeral=True)
             else:
                 users = utils.read_json_file(_users)
 
@@ -194,6 +207,7 @@ class RegistrationMod(commands.Cog):
                 
                 users[str(member.id)]['num'] = number[-2:] if users[str(member.id)]['div'] == 'PRO' else number[-3:]                
                 utils.write_json_file(users, _users)
+                await utils.update_roster(interaction.guild)
                 await interaction.response.send_message(f'{member.display_name}\'s number has been set to {number}.', ephemeral=True)
     
 
@@ -224,6 +238,8 @@ class RegistrationMod(commands.Cog):
         if user_ in users:
             users[user_]['team'] = team
             utils.write_json_file(users, _users)
+            await utils.update_roster(interaction.guild)
+            await utils.admin_log(interaction.guild, f'/team called by {interaction.user.name}')
             await interaction.response.send_message(f'Your team name has been changed to {team}.', ephemeral=True)
         else:
             await interaction.response.send_message(f'You are not currently registered. Please use the `/register` command to register if you wish to drive.',
@@ -241,9 +257,21 @@ class RegistrationMod(commands.Cog):
         if user_ in users:
             users[user_]['team'] = team
             utils.write_json_file(users, _users)
+            await utils.update_roster(interaction.guild)
             await interaction.response.send_message(f'{driver.display_name}\'s team changed to {team}.', ephemeral=True, delete_after=5)
         else:
             await interaction.response.send_message(f'{driver.display_name} ({driver.id}) is not registered.', ephemeral=True, delete_after=5)
+    
+
+    @app_commands.command(description='Alert driver that invite has been sent.')
+    @app_commands.describe(driver='The driver who has been invited.')
+    @app_commands.default_permissions()
+    @commands.is_owner()
+    async def invite(self, interaction: discord.Interaction, driver: discord.Member):
+        help = 'https://discord.com/channels/916828519487656007/1025052192815718430/1025054772404944986'
+        await driver.send(f'Your league invite has been sent! Be sure to use /number to claim your number if you haven\'t already. '
+                          f'If you have problems finding it, please refer to: {help}')
+        await interaction.response.send_message(f'{driver.display_name} has been notified of invitation.', ephemeral=True, delete_after=5)
 
 
 async def setup(bot):

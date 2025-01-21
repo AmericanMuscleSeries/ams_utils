@@ -21,8 +21,7 @@ class Broadcast(commands.Cog):
 
     
     @app_commands.command(description='Generates a roster for with driver divs, names, and numbers.')
-    @app_commands.default_permissions()
-    @commands.has_any_role(const.BROADCAST_ROLE)
+    @commands.has_role(1192260514466762833)
     async def number_roster(self, interaction: discord.Interaction) -> None:
         users = utils.read_json_file(_users)
         roster = [f'({users[user]["div"]}) {users[user]["pref_name"]},{users[user]["num"]}' for user in users]
@@ -40,14 +39,23 @@ class Broadcast(commands.Cog):
     
 
     @app_commands.command(description='Generates a roster for loading overlays.')
-    @app_commands.default_permissions()
-    @commands.has_any_role(const.BROADCAST_ROLE)
+    @commands.has_role(1192260514466762833)
     async def overlay_roster(self, interaction: discord.Interaction) -> None:
         users = utils.read_json_file(_users)
         output = ''
 
         for user in users:
-            output = output + f'{users[user]["iracing_id"]},{users[user]["div"]}\n' if users[user]['div'] is not None else ''
+            user_ = users[user]
+            line = ''
+            line = line + f'{user_["pref_name"]},{user_["iracing_id"]}'
+            line = line + ',Transparent,Transparent,Transparent,Transparent,'
+            tokens = user_['pref_name'].split(maxsplit=2)
+            num_tokens = len(tokens)
+            line = line + f'{tokens[0]},{tokens[1]},{tokens[2] if num_tokens > 2 else ""}'
+            line = line + ',,,None,None,,,,'
+            line = line + f'{user_["div"]}'
+            line = line + ',None,None,,,,'
+            output = output + line + '\n'
         
         with open(_overlay, 'w') as file:
             file.write(output)
@@ -59,9 +67,8 @@ class Broadcast(commands.Cog):
                 os.remove(_overlay)
     
 
-    @app_commands.command(description='Generates a roster for loading overlays.')
-    @app_commands.default_permissions()
-    @commands.has_any_role(const.BROADCAST_ROLE)
+    @app_commands.command(description='Generates help menu for broadcast roles.')
+    @commands.has_role(1192260514466762833)
     async def help_broadcast(self, interaction: discord.Interaction) -> None:
         file = discord.File('static/img/bot-avatar.png', filename='bot-avatar.png')
         embed = discord.Embed(
@@ -71,8 +78,8 @@ class Broadcast(commands.Cog):
         )
         embed.set_thumbnail(url='attachment://bot-avatar.png')
         embed.add_field(name='/help_broadcast', value='Shows this message', inline=False)
-        embed.add_field(name='/number_roster', value='Generates a roster in "(DIV) Driver Name,number" format', inline=False)
-        embed.add_field(name='/overlay_roster', value='Generates an overlay roster in "iRacing ID,division" format', inline=False)
+        embed.add_field(name='/number_roster', value='Generates a roster in SDK points format without the points values', inline=False)
+        embed.add_field(name='/overlay_roster', value='Generates an overlay roster in SDK format', inline=False)
         await interaction.response.send_message(embed=embed, file=file, ephemeral=True)
 
     

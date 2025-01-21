@@ -23,7 +23,7 @@ class Help(commands.Cog):
         )
         embed.set_thumbnail(url='attachment://bot-avatar.png')
         embed.add_field(name='/help', value='Shows this message', inline=False)
-        embed.add_field(name='/register', value='Register for current or upcoming AMS season', inline=False)
+        embed.add_field(name='/register', value='Register for current AMS season', inline=False)
         embed.add_field(name='/myinfo', value='Displays your registration info', inline=False)
         embed.add_field(name='/name', value='Alter your preferred name', inline=False)
         embed.add_field(name='/number', value='Claim a number if it is available', inline=False)

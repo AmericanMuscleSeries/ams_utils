@@ -2,3 +2,5 @@ venv/
 .env
 static/
 __pycache__/
+demo.py
+
