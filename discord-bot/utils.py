@@ -49,6 +49,16 @@ async def update_roster(guild: discord.Guild) -> None:
 
     roster = [f'{drivers[d]["num"]} - {drivers[d]["pref_name"]} ({drivers[d]["div"]})' for d in drivers]
     roster.sort(key=lambda d: int(d.split()[0]))
-    output = 'Season 8 roster:\n' + ''.join(f'> {entry}\n' for entry in roster)
+    output = 'Season 8 roster:\n' + ''.join(f'> {entry}\n' for entry in roster) + _get_stats(drivers)
     roster_message = await channel.fetch_message(msg_id)
     await roster_message.edit(content=f'{output}')
+
+
+def _get_stats(drivers: list) -> str:
+    am_div = [drivers[d] for d in drivers if drivers[d]['div'] == 'AM']
+    ch_div = [drivers[d] for d in drivers if drivers[d]['div'] == 'CH']
+    pro_div = [drivers[d] for d in drivers if drivers[d]['div'] == 'PRO']
+    stats = (f'\n**Registration stats:**\n{len(drivers)} drivers registered\n{len(pro_div)} PRO\n'
+             f'{len(ch_div)} CH\n{len(am_div)} AM')
+    
+    return stats
