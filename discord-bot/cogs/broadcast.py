@@ -48,13 +48,13 @@ class Broadcast(commands.Cog):
             user_ = users[user]
             line = ''
             line = line + f'{user_["pref_name"]},{user_["iracing_id"]}'
-            line = line + ',Transparent,Transparent,Transparent,Transparent,'
+            line = line + ',Transparent,Transparent,,Transparent,Transparent,'
             tokens = user_['pref_name'].split(maxsplit=2)
             num_tokens = len(tokens)
             line = line + f'{tokens[0]},{tokens[1]},{tokens[2] if num_tokens > 2 else ""}'
-            line = line + ',,,None,None,,,,'
+            line = line + ',,,,None,None,None,,,'
             line = line + f'{user_["div"]}'
-            line = line + ',None,None,,,,'
+            line = line + ',None,None,,,None,None'
             output = output + line + '\n'
         
         with open(_overlay, 'w') as file:
