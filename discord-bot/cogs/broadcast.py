@@ -61,7 +61,7 @@ class Broadcast(commands.Cog):
             file.write(output)
         
         with open(_overlay, 'rb') as file:
-            await interaction.response.send_message(file=discord.File(file, filename='overlay_roster.csv'), ephemeral=True)
+            await interaction.response.send_message(file=discord.File(file, filename='ams-driver-overrides.csv'), ephemeral=True)
             
             if os.path.exists(_overlay):
                 os.remove(_overlay)
