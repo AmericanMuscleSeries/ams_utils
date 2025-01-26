@@ -42,7 +42,7 @@ class Broadcast(commands.Cog):
     @commands.has_role(1192260514466762833)
     async def overlay_roster(self, interaction: discord.Interaction) -> None:
         users = utils.read_json_file(_users)
-        output = ''
+        output = 'iRacing name,iRacing ID,Multicar team background color,Multicar team text color,Multicar team logo url,iRacing car color override,iRacing car number color override,First name override,Last name override,Suffix override,Initials override,iRacing team name override,Multicar team name,Highlight,Club name override,Photo URL,Number URL,Car Url,Class 1,Class 2,Class 3,Birth date,Home town,Driver header,Driver information\n'
 
         for user in users:
             user_ = users[user]
