@@ -13,7 +13,9 @@ log = logging.getLogger('discord')
 _users = 'static/data/users.json'
 _overlay = 'static/data/overlay_roster.csv'
 _number = 'static/data/number_roster.csv'
-_points = 'static/data/points_roster.csv'
+_am_points = 'static/data/ams_am_points.csv'
+_ch_points = 'static/data/ams_ch_points.csv'
+_pro_points = 'static/data/ams_pro_points.csv'
 
 
 class Broadcast(commands.Cog):
@@ -74,7 +76,7 @@ class Broadcast(commands.Cog):
     async def points_roster(self, interaction: discord.Interaction) -> None:
         drivers = utils.read_json_file(_users)
         points = standings.get_points(const.SEASON, const.INCLUDE_DROPS)
-        output = 'First name,Last name,Suffix,Multicar team name,Club name,iRacing ID,Car number,Multicar team background color,iRacing car color,iRacing car number color,iRacing car number color 2,iRacing car number color 3,iRacing car number font ID,iRacing car number style,Points before weekend,Points earned,Bonus points,Points after weekend\n'
+        headers = 'First name,Last name,Suffix,Multicar team name,Club name,iRacing ID,Car number,Multicar team background color,iRacing car color,iRacing car number color,iRacing car number color 2,iRacing car number color 3,iRacing car number font ID,iRacing car number style,Points before weekend,Points earned,Bonus points,Points after weekend\n'
         lines = []
         
         for driver in drivers:
@@ -91,16 +93,32 @@ class Broadcast(commands.Cog):
             lines.append(line)
         
         lines.sort(key=lambda x: int(x.split(',')[6]))
-        output = output + '\n'.join(line for line in lines)
-        
-        with open(_points, 'w') as file:
-            file.write(output)
-        
-        with open(_points, 'rb') as file:
-            await interaction.response.send_message(file=discord.File(file, filename='ams-driver-points.csv'), ephemeral=True)
-            
-            if os.path.exists(_points):
-                os.remove(_points)
+        pro_points = headers + '\n'.join(line for line in lines if int(line.split(',')[6]) < 100)
+        ch_points = headers + '\n'.join(line for line in lines if 100 <= int(line.split(',')[6]) < 200)
+        am_points = headers + '\n'.join(line for line in lines if int(line.split(',')[6]) >= 200)
+
+        with open(_am_points, 'w') as file:
+            file.write(am_points)
+        with open(_ch_points, 'w') as file:
+            file.write(ch_points)
+        with open(_pro_points, 'w') as file:
+            file.write(pro_points)
+
+        points_files_to_read: list[str] = [_am_points, _ch_points, _pro_points]
+        files_to_send: list[discord.File] = []
+
+        for filename in points_files_to_read:
+            with open(filename, 'rb') as file:
+                files_to_send.append(discord.File(file))
+
+        await interaction.response.send_message(files=files_to_send, ephemeral=True)
+
+        if os.path.exists(_am_points):
+            os.remove(_am_points)
+        if os.path.exists(_ch_points):
+            os.remove(_ch_points)
+        if os.path.exists(_pro_points):
+            os.remove(_pro_points)
     
 
     @app_commands.command(description='Generates help menu for broadcast roles.')
