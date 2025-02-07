@@ -71,7 +71,7 @@ class Broadcast(commands.Cog):
                 os.remove(_overlay)
     
 
-    @app_commands.command(description='Generates a points sheet, ordered by division, then points.')
+    @app_commands.command(description='Generates a points sheet for each division.')
     @commands.has_role(1192260514466762833)
     async def points_roster(self, interaction: discord.Interaction) -> None:
         drivers = utils.read_json_file(_users)
@@ -134,7 +134,7 @@ class Broadcast(commands.Cog):
         embed.add_field(name='/help_broadcast', value='Shows this message', inline=False)
         embed.add_field(name='/number_roster', value='Generates a number roster', inline=False)
         embed.add_field(name='/overlay_roster', value='Generates an overlay roster in SDK format', inline=False)
-        embed.add_field(name='/points_roster', value='Generates consolidated points sheet in SDK format (requires separation)', inline=False)
+        embed.add_field(name='/points_roster', value='Generates point sheet in the SDK format for each division', inline=False)
         await interaction.response.send_message(embed=embed, file=file, ephemeral=True)
 
 
