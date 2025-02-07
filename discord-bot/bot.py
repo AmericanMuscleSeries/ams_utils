@@ -27,8 +27,11 @@ async def on_ready():
         log.error(e)
 
     log.info(f'{client.user} is now running!')
-    log.info(f'*****CONFIG*****\nLogo: {const.LOGO}\nLog Dir: {const.LOG_DIR}\nAdmin Channel: {const.ADMIN_CH}\nBroadcaster Role: {const.BROADCAST_ROLE}\n'
-             f'Entry Fee: {const.ENTRY_FEE}\nRegistration Open: {const.REG_OPEN}\nReg Open For: {const.REG_OPEN_FOR}')
+    log.info(f'*****CONFIG*****\nLogo: {const.LOGO}\nLog Dir: {const.LOG_DIR}\n'
+             f'Admin Channel: {const.ADMIN_CH}\nBroadcaster Role: {const.BROADCAST_ROLE}\n'
+             f'Entry Fee: {const.ENTRY_FEE}\nRegistration Open: {const.REG_OPEN}\n'
+             f'Reg Open For: {const.REG_OPEN_FOR}\nInfo Channel: {const.INFO_CH}\n'
+             f'Season: {const.SEASON}\nInclude Drops: {const.INCLUDE_DROPS}')
 
 
 async def load():

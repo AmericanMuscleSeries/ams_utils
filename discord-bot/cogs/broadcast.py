@@ -2,6 +2,7 @@ import constants as const
 import discord
 import logging
 import os
+import standings
 import utils
 
 from discord import app_commands
@@ -12,6 +13,7 @@ log = logging.getLogger('discord')
 _users = 'static/data/users.json'
 _overlay = 'static/data/overlay_roster.csv'
 _number = 'static/data/number_roster.csv'
+_points = 'static/data/points_roster.csv'
 
 
 class Broadcast(commands.Cog):
@@ -67,6 +69,40 @@ class Broadcast(commands.Cog):
                 os.remove(_overlay)
     
 
+    @app_commands.command(description='Generates a points sheet, ordered by division, then points.')
+    @commands.has_role(1192260514466762833)
+    async def points_roster(self, interaction: discord.Interaction) -> None:
+        drivers = utils.read_json_file(_users)
+        points = standings.get_points(const.SEASON, const.INCLUDE_DROPS)
+        output = 'First name,Last name,Suffix,Multicar team name,Club name,iRacing ID,Car number,Multicar team background color,iRacing car color,iRacing car number color,iRacing car number color 2,iRacing car number color 3,iRacing car number font ID,iRacing car number style,Points before weekend,Points earned,Bonus points,Points after weekend\n'
+        lines = []
+        
+        for driver in drivers:
+            driver_ = drivers[driver]
+            iracing_id = driver_['iracing_id']
+            current_points = points[iracing_id] if iracing_id in points else 0
+            line = ''
+            tokens = driver_['pref_name'].split(maxsplit=2)
+            num_tokens = len(tokens)
+            line = line + f'{tokens[0]},{tokens[1]},{tokens[2] if num_tokens > 2 else ""}'
+            line = line + f',{driver_["team"]},,{iracing_id},{driver_["num"]}'
+            line = line + ',Transparent,Transparent,Transparent,Transparent,Transparent,0,0,0,0,0'
+            line = line + f',{current_points}'
+            lines.append(line)
+        
+        lines.sort(key=lambda x: int(x.split(',')[6]))
+        output = output + '\n'.join(line for line in lines)
+        
+        with open(_points, 'w') as file:
+            file.write(output)
+        
+        with open(_points, 'rb') as file:
+            await interaction.response.send_message(file=discord.File(file, filename='ams-driver-points.csv'), ephemeral=True)
+            
+            if os.path.exists(_points):
+                os.remove(_points)
+    
+
     @app_commands.command(description='Generates help menu for broadcast roles.')
     @commands.has_role(1192260514466762833)
     async def help_broadcast(self, interaction: discord.Interaction) -> None:
@@ -78,11 +114,12 @@ class Broadcast(commands.Cog):
         )
         embed.set_thumbnail(url='attachment://bot-avatar.png')
         embed.add_field(name='/help_broadcast', value='Shows this message', inline=False)
-        embed.add_field(name='/number_roster', value='Generates a roster in SDK points format without the points values', inline=False)
+        embed.add_field(name='/number_roster', value='Generates a number roster', inline=False)
         embed.add_field(name='/overlay_roster', value='Generates an overlay roster in SDK format', inline=False)
+        embed.add_field(name='/points_roster', value='Generates consolidated points sheet in SDK format (requires separation)', inline=False)
         await interaction.response.send_message(embed=embed, file=file, ephemeral=True)
 
-    
+
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(Broadcast(bot))
