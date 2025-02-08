@@ -109,7 +109,7 @@ class Broadcast(commands.Cog):
 
         for filename in points_files_to_read:
             with open(filename, 'rb') as file:
-                files_to_send.append(discord.File(file))
+                files_to_send.append(discord.File(file, filename=os.path.basename(file.name)))
 
         await interaction.response.send_message(files=files_to_send, ephemeral=True)
 
