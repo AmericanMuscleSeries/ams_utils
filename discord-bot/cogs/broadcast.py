@@ -22,10 +22,17 @@ class Broadcast(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         log.info(f'{__name__} initializing')
         self.bot = bot
+    
+
+    async def handle_check_failure(self, interaction: discord.Interaction, 
+                                   error: discord.app_commands.AppCommandError) -> None:
+        if isinstance(error, app_commands.CheckFailure):
+            await interaction.response.send_message('You must be part of the broadcast team to access '
+                                                    'this command.', ephemeral=True, delete_after=5)
 
     
-    @app_commands.command(description='Generates a roster for with driver divs, names, and numbers.')
-    @commands.has_role(1192260514466762833)
+    @app_commands.command(description='Generates a roster for with driver divs, names, and numbers.')    
+    @app_commands.checks.has_any_role('broadcast team', 'officials', 'Inner Circle')
     async def number_roster(self, interaction: discord.Interaction) -> None:
         users = utils.read_json_file(_users)
         roster = [f'({users[user]["div"]}) {users[user]["pref_name"]},{users[user]["num"]}' for user in users]
@@ -42,8 +49,14 @@ class Broadcast(commands.Cog):
                 os.remove(_number)
     
 
-    @app_commands.command(description='Generates a roster for loading overlays.')
-    @commands.has_role(1192260514466762833)
+    @number_roster.error
+    async def number_roster_error(self, interaction: discord.Interaction, 
+                                  error: discord.app_commands.AppCommandError) -> None:
+        await self.handle_check_failure(interaction, error)
+    
+
+    @app_commands.command(description='Generates a roster for loading overlays.')    
+    @app_commands.checks.has_any_role('broadcast team', 'officials', 'Inner Circle')
     async def overlay_roster(self, interaction: discord.Interaction) -> None:
         users = utils.read_json_file(_users)
         output = 'iRacing name,iRacing ID,Multicar team background color,Multicar team text color,Multicar team logo url,iRacing car color override,iRacing car number color override,First name override,Last name override,Suffix override,Initials override,iRacing team name override,Multicar team name,Highlight,Club name override,Photo URL,Number URL,Car Url,Class 1,Class 2,Class 3,Birth date,Home town,Driver header,Driver information\n'
@@ -71,8 +84,14 @@ class Broadcast(commands.Cog):
                 os.remove(_overlay)
     
 
-    @app_commands.command(description='Generates a points sheet for each division.')
-    @commands.has_role(1192260514466762833)
+    @overlay_roster.error
+    async def overlay_roster_error(self, interaction: discord.Interaction, 
+                                  error: discord.app_commands.AppCommandError) -> None:
+        await self.handle_check_failure(interaction, error)
+    
+
+    @app_commands.command(description='Generates a points sheet for each division.')    
+    @app_commands.checks.has_any_role('broadcast team', 'officials', 'Inner Circle')
     async def points_roster(self, interaction: discord.Interaction) -> None:
         drivers = utils.read_json_file(_users)
         points = standings.get_points(const.SEASON, const.INCLUDE_DROPS)
@@ -121,8 +140,14 @@ class Broadcast(commands.Cog):
             os.remove(_pro_points)
     
 
+    @points_roster.error
+    async def points_roster_error(self, interaction: discord.Interaction, 
+                                  error: discord.app_commands.AppCommandError) -> None:
+        await self.handle_check_failure(interaction, error)
+    
+
     @app_commands.command(description='Generates help menu for broadcast roles.')
-    @commands.has_role(1192260514466762833)
+    @app_commands.checks.has_any_role('broadcast team', 'officials', 'Inner Circle')
     async def help_broadcast(self, interaction: discord.Interaction) -> None:
         file = discord.File('static/img/bot-avatar.png', filename='bot-avatar.png')
         embed = discord.Embed(
@@ -136,7 +161,12 @@ class Broadcast(commands.Cog):
         embed.add_field(name='/overlay_roster', value='Generates an overlay roster in SDK format', inline=False)
         embed.add_field(name='/points_roster', value='Generates point sheet in the SDK format for each division', inline=False)
         await interaction.response.send_message(embed=embed, file=file, ephemeral=True)
+    
 
+    @help_broadcast.error
+    async def help_broadcast_error(self, interaction: discord.Interaction, 
+                                  error: discord.app_commands.AppCommandError) -> None:
+        await self.handle_check_failure(interaction, error)
 
 
 async def setup(bot: commands.Bot) -> None:
