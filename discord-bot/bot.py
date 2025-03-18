@@ -31,7 +31,7 @@ async def on_ready():
              f'Admin Channel: {const.ADMIN_CH}\nBroadcaster Role: {const.BROADCAST_ROLE}\n'
              f'Entry Fee: {const.ENTRY_FEE}\nRegistration Open: {const.REG_OPEN}\n'
              f'Reg Open For: {const.REG_OPEN_FOR}\nInfo Channel: {const.INFO_CH}\n'
-             f'Season: {const.SEASON}\nInclude Drops: {const.INCLUDE_DROPS}')
+             f'Points File: {const.POINTS_FILE}\nInclude Drops: {const.INCLUDE_DROPS}')
 
 
 async def load():
