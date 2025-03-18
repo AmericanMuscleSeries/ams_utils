@@ -1,7 +1,13 @@
 import constants as const
 import utils
 
+
 _points = const.POINTS_FILE
+
+
+def get_points(season: int, drops: bool=True) -> dict:
+    """deprecated, will be removed"""
+    return get_points(drops)
 
 
 def get_points(drops: bool=True) -> dict:
