@@ -94,7 +94,7 @@ class Broadcast(commands.Cog):
     @app_commands.checks.has_any_role('broadcast team', 'officials', 'Inner Circle')
     async def points_roster(self, interaction: discord.Interaction) -> None:
         drivers = utils.read_json_file(_users)
-        points = standings.get_points(const.SEASON, const.INCLUDE_DROPS)
+        points = standings.get_points(const.INCLUDE_DROPS)
         headers = 'First name,Last name,Suffix,Multicar team name,Club name,iRacing ID,Car number,Multicar team background color,iRacing car color,iRacing car number color,iRacing car number color 2,iRacing car number color 3,iRacing car number font ID,iRacing car number style,Points before weekend,Points earned,Bonus points,Points after weekend\n'
         lines = []
         

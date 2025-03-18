@@ -1,12 +1,11 @@
+import constants as const
 import utils
 
+_points = const.POINTS_FILE
 
-_points = 'static/data/league.json'
 
-
-def get_points(season: int, drops: bool=True) -> dict:
-    raw = utils.read_json_file(_points)
-    season = raw['Seasons'][str(season)] if str(season) in raw['Seasons'] else {}
+def get_points(drops: bool=True) -> dict:
+    season = utils.read_json_file(_points)
     driver_points = {}
 
     if len(season) == 0:
