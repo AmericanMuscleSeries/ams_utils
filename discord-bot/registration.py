@@ -23,7 +23,7 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
 
         if good_div:
             rules = 'https://discord.com/channels/916828519487656007/1025052192815718430/1193226323791990784'
-            payment = 'https://discord.com/channels/916828519487656007/1025052192815718430/1193304565697740860'
+            payment = 'https://discord.com/channels/916828519487656007/1025052192815718430/1447672170929983570'
             users = utils.read_json_file(_users)
             user_ = str(interaction.user.id)
             users[user_] = {}
