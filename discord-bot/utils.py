@@ -13,7 +13,7 @@ def is_admin(id: int) -> bool:
 
 
 async def admonish(interaction: discord.Interaction) -> None:
-    await interaction.response.send_message('Hey punk, you\'re not an admin!')
+    await interaction.response.send_message('Hey punk, you\'re not an admin! Frig off!')
 
 
 def read_json_file(file_path: str) -> dict:
