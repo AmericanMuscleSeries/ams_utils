@@ -8,6 +8,10 @@ log = logging.getLogger('discord')
 _users = 'static/data/users.json'
 
 
+def is_admin(id: int) -> bool:
+    return str(id) in const.ADMINS
+
+
 def read_json_file(file_path: str) -> dict:
     log.debug(f'reading json from {file_path}')
 

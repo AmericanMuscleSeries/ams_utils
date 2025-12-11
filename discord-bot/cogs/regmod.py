@@ -54,12 +54,10 @@ class RegistrationMod(commands.Cog):
 
     @app_commands.command(description='Displays registration info for user. (requires permissions)')
     @app_commands.describe(member='The member for whom to fetch registration info.')
-    @app_commands.default_permissions()
-    @commands.is_owner()
     async def reginfo(self, interaction: discord.Interaction, member: discord.Member):
         embed = self.get_user_info_embed(member)
 
-        if embed:
+        if utils.is_admin(interaction.user.id) and embed:
             await interaction.response.send_message(embed=embed, ephemeral=True)
         else:
             await interaction.response.send_message(f'{member.display_name} not found in registered users.', ephemeral=True)
@@ -96,13 +94,13 @@ class RegistrationMod(commands.Cog):
     
     @app_commands.command(description='Alter a driver\'s preferred name. (requires permissions)')
     @app_commands.describe(driver='The driver whose name is to be edited.', name='The driver\'s updated name.')
-    @app_commands.default_permissions()
-    @commands.is_owner()
     async def alter_name(self, interaction: discord.Interaction, driver: discord.Member, name: str):
         users = utils.read_json_file(_users)
         user_ = str(driver.id)
+        log.info(interaction.user.id)
+        log.info(utils.is_admin(interaction.user.id))
 
-        if user_ in users:
+        if utils.is_admin(interaction.user.id) and user_ in users:
             users[user_]['pref_name'] = name
             await driver.edit(nick=name)
             utils.write_json_file(users, _users)
