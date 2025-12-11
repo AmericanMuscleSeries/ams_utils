@@ -12,6 +12,10 @@ def is_admin(id: int) -> bool:
     return str(id) in const.ADMINS
 
 
+async def admonish(interaction: discord.Interaction) -> None:
+    await interaction.response.send_message('Hey punk, you\'re not an admin!')
+
+
 def read_json_file(file_path: str) -> dict:
     log.debug(f'reading json from {file_path}')
 
