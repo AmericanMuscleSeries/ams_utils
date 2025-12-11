@@ -57,7 +57,9 @@ class RegistrationMod(commands.Cog):
     async def reginfo(self, interaction: discord.Interaction, member: discord.Member):
         embed = self.get_user_info_embed(member)
 
-        if utils.is_admin(interaction.user.id) and embed:
+        if not utils.is_admin(interaction.user.id):
+            await utils.admonish(interaction)
+        elif embed:
             await interaction.response.send_message(embed=embed, ephemeral=True)
         else:
             await interaction.response.send_message(f'{member.display_name} not found in registered users.', ephemeral=True)
@@ -97,10 +99,10 @@ class RegistrationMod(commands.Cog):
     async def alter_name(self, interaction: discord.Interaction, driver: discord.Member, name: str):
         users = utils.read_json_file(_users)
         user_ = str(driver.id)
-        log.info(interaction.user.id)
-        log.info(utils.is_admin(interaction.user.id))
 
-        if utils.is_admin(interaction.user.id) and user_ in users:
+        if not utils.is_admin(interaction.user.id):
+            await utils.admonish(interaction)
+        elif user_ in users:
             users[user_]['pref_name'] = name
             await driver.edit(nick=name)
             utils.write_json_file(users, _users)
