@@ -1,5 +1,6 @@
 import discord
 import logging
+import utils
 
 from discord import app_commands
 from discord.ext import commands
@@ -14,7 +15,7 @@ class Help(commands.Cog):
         self.bot = bot
     
 
-    def get_help_embed(self) -> tuple[discord.Embed, discord.File]:
+    def get_help_embed(self, for_admin: bool = False) -> tuple[discord.Embed, discord.File]:
         file = discord.File('static/img/bot-avatar.png', filename='bot-avatar.png')
         embed = discord.Embed(
             title='Jessica Rabbot Commands',
@@ -31,12 +32,15 @@ class Help(commands.Cog):
         embed.add_field(name='/schedule', value='Display the season schedule', inline=False)
         embed.add_field(name='/next_race', value='Display the track and date of the next race', inline=False)
 
+        if for_admin:
+            embed.add_field(name='/help_admin', value='Display message showing admin commands', inline=False)
+
         return embed, file
     
 
     @app_commands.command(description='Displays the available commands and their uses.')
     async def help(self, interaction: discord.Interaction):
-        embed, file = self.get_help_embed()
+        embed, file = self.get_help_embed(utils.is_admin(interaction.user.id))
         await interaction.response.send_message(embed=embed, file=file, ephemeral=True)
     
 
