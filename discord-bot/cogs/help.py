@@ -36,8 +36,10 @@ class Help(commands.Cog):
         embed.add_field(name='/next_race', value='Display the track and date of the next race', inline=False)
 
         if for_admin:
-            embed.add_field(name='/helpp', value='Shows help message publicly.', inline=False)
+            embed.add_field(name='-------------------', value='**Admin Commands**', inline=False)
+            embed.add_field(name='/helpp', value='Shows help message publicly', inline=False)
             embed.add_field(name='/help_admin', value='Display message showing admin commands', inline=False)
+            embed.add_field(name='/help_broadcast', value='Display broadcast helper commands', inline=False)
 
         return embed
     
@@ -57,6 +59,8 @@ class Help(commands.Cog):
         embed.add_field(name='/reginfo', value='Shows a driver\'s registration info', inline=False)
         embed.add_field(name='/registrations', value='Produces all registered drivers\' info (JSON)', inline=False)
         embed.add_field(name='/set_number', value='Sets a driver\'s number', inline=False)
+
+        return embed
 
 
     @app_commands.command(description='Displays the available commands and their uses.')
@@ -82,8 +86,8 @@ class Help(commands.Cog):
             await utils.admonish(interaction)
         else:
             embed = self.get_help_admin_embed()
-            file = self.get_avatar
-            await interaction.response.send_message(embed=embed, file=file)
+            file = self.get_avatar()
+            await interaction.response.send_message(embed=embed, file=file, ephemeral=True)
 
 
 async def setup(bot):
