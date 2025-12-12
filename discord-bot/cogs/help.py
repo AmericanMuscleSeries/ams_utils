@@ -46,8 +46,8 @@ class Help(commands.Cog):
 
     def get_help_admin_embed(self) -> discord.Embed:
         embed = discord.Embed(
-            title='Jessica Rabbot Commands',
-            description='List of usable commands',
+            title='Jessica Rabbot Admin Commands',
+            description='List of usable commands for administration',
             color=discord.Color.red()
         )
         embed.set_thumbnail(url='attachment://bot-avatar.png')
