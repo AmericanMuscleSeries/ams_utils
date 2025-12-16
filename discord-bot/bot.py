@@ -98,7 +98,9 @@ async def register(interaction: discord.Interaction):
     user_ = str(interaction.user.id)
     log.info(f'registration attempt by {interaction.user.display_name}')
 
-    if user_ in users:
+    if not isinstance(interaction.user, discord.Member):
+        await interaction.response.send_message('Registration via direct message is not currently enabled.')
+    elif user_ in users:
         log.info(f'{interaction.user.display_name} attempted to register, but is already registered ({users[user_]})')
         await interaction.response.send_message('You are already registered.', ephemeral=True)
     elif const.REG_OPEN:
