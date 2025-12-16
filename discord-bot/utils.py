@@ -8,12 +8,8 @@ log = logging.getLogger('discord')
 _users = 'static/data/users.json'
 
 
-def is_admin(id: int) -> bool:
-    return str(id) in const.ADMINS
-
-
-async def admonish(interaction: discord.Interaction) -> None:
-    await interaction.response.send_message('Hey punk, you\'re not an admin! Frig off!', ephemeral=True)
+def is_admin(user: discord.Member) -> bool:
+    return any(role.name in const.ADMIN_ROLES for role in user.roles)
 
 
 def read_json_file(file_path: str) -> dict:

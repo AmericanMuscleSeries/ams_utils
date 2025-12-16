@@ -1,3 +1,4 @@
+import constants as const
 import discord
 import logging
 import utils
@@ -65,29 +66,25 @@ class Help(commands.Cog):
 
     @app_commands.command(description='Displays the available commands and their uses.')
     async def help(self, interaction: discord.Interaction):
-        embed = self.get_help_embed(utils.is_admin(interaction.user.id))
+        embed = self.get_help_embed(utils.is_admin(interaction.user))
         file = self.get_avatar()
         await interaction.response.send_message(embed=embed, file=file, ephemeral=True)
     
 
     @app_commands.command(description='Displays the available commands and their uses publicly. (requires permissions)')
+    @app_commands.checks.has_any_role(*const.ADMIN_ROLES)
     async def helpp(self, interaction: discord.Interaction):
-        if not utils.is_admin(interaction.user.id):
-            await utils.admonish(interaction)
-        else:
-            embed = self.get_help_embed(False)
-            file = self.get_avatar()
-            await interaction.response.send_message(embed=embed, file=file)
+        embed = self.get_help_embed(False)
+        file = self.get_avatar()
+        await interaction.response.send_message(embed=embed, file=file)
     
 
     @app_commands.command(description='Displays the available admin commands and their uses. (requires permissions)')
+    @app_commands.checks.has_any_role(*const.ADMIN_ROLES)
     async def help_admin(self, interaction: discord.Interaction):
-        if not utils.is_admin(interaction.user.id):
-            await utils.admonish(interaction)
-        else:
-            embed = self.get_help_admin_embed()
-            file = self.get_avatar()
-            await interaction.response.send_message(embed=embed, file=file, ephemeral=True)
+        embed = self.get_help_admin_embed()
+        file = self.get_avatar()
+        await interaction.response.send_message(embed=embed, file=file, ephemeral=True)
 
 
 async def setup(bot):

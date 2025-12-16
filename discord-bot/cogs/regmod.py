@@ -54,12 +54,11 @@ class RegistrationMod(commands.Cog):
 
     @app_commands.command(description='Displays registration info for user. (requires permissions)')
     @app_commands.describe(member='The member for whom to fetch registration info.')
+    @app_commands.checks.has_any_role(*const.ADMIN_ROLES)
     async def reginfo(self, interaction: discord.Interaction, member: discord.Member):
         embed = self.get_user_info_embed(member)
 
-        if not utils.is_admin(interaction.user.id):
-            await utils.admonish(interaction)
-        elif embed:
+        if embed:
             await interaction.response.send_message(embed=embed, ephemeral=True)
         else:
             await interaction.response.send_message(f'{member.display_name} not found in registered users.', ephemeral=True)
@@ -75,13 +74,12 @@ class RegistrationMod(commands.Cog):
 
     @app_commands.command(description='Set a driver\'s division.  (requires permissions)')
     @app_commands.describe(driver='The driver whose division is to be changed.', division='The division in which to place the driver.')
+    @app_commands.checks.has_any_role(*const.ADMIN_ROLES)
     async def division(self, interaction: discord.Interaction, driver: discord.Member, division: str):
         users = utils.read_json_file(_users)
         user = str(driver.id)
 
-        if not utils.is_admin(interaction.user.id):
-            await utils.admonish(interaction)
-        elif user in users:
+        if user in users:
             current_role = discord.utils.get(interaction.guild.roles, name=users[user]['div'])
             new_role = discord.utils.get(interaction.guild.roles, name=division.upper())
             await driver.remove_roles(current_role)
@@ -96,13 +94,12 @@ class RegistrationMod(commands.Cog):
     
     @app_commands.command(description='Alter a driver\'s preferred name. (requires permissions)')
     @app_commands.describe(driver='The driver whose name is to be edited.', name='The driver\'s updated name.')
+    @app_commands.checks.has_any_role(*const.ADMIN_ROLES)
     async def alter_name(self, interaction: discord.Interaction, driver: discord.Member, name: str):
         users = utils.read_json_file(_users)
         user_ = str(driver.id)
 
-        if not utils.is_admin(interaction.user.id):
-            await utils.admonish(interaction)
-        elif user_ in users:
+        if user_ in users:
             users[user_]['pref_name'] = name
             await driver.edit(nick=name)
             utils.write_json_file(users, _users)
@@ -171,12 +168,11 @@ class RegistrationMod(commands.Cog):
 
     @app_commands.command(description='Set the number for a driver if it is available.')
     @app_commands.describe(number='The number you wish to set.', member='The member whose number you wish to alter or set.')
+    @app_commands.checks.has_any_role(*const.ADMIN_ROLES)
     async def set_number(self, interaction: discord.Interaction, member: discord.Member, number: str) -> None:
         driver = self.get_user_info(member)
 
-        if not utils.is_admin(interaction.user.id):
-            await utils.admonish(interaction)
-        elif driver:
+        if driver:
             try:
                 int(number)
             except ValueError as e:
@@ -213,22 +209,18 @@ class RegistrationMod(commands.Cog):
 
     @app_commands.command(description='Process a driver\'s payment. (requires permissions)')
     @app_commands.describe(driver='The driver whose pamyent is to be processed.')
+    @app_commands.checks.has_any_role(*const.ADMIN_ROLES)
     async def payment(self, interaction: discord.Interaction, driver: discord.Member):
-        if not utils.is_admin(interaction.user.id):
-            await utils.admonish(interaction)
-        else:
-            unpaid = discord.utils.get(interaction.guild.roles, name='unpaid')
-            await driver.remove_roles(unpaid)
-            await interaction.response.send_message(f'Payment processed for {driver.display_name}.', ephemeral=True)
+        unpaid = discord.utils.get(interaction.guild.roles, name='unpaid')
+        await driver.remove_roles(unpaid)
+        await interaction.response.send_message(f'Payment processed for {driver.display_name}.', ephemeral=True)
     
 
     @app_commands.command(description='Download registered drivers. (requires permissions)')
+    @app_commands.checks.has_any_role(*const.ADMIN_ROLES)
     async def registrations(self, interaction: discord.Interaction):
-        if not utils.is_admin(interaction.user.id):
-            await utils.admonish(interaction)
-        else:
-            file = discord.File(_users, filename='registrations.json')
-            await interaction.response.send_message(file=file, ephemeral=True)
+        file = discord.File(_users, filename='registrations.json')
+        await interaction.response.send_message(file=file, ephemeral=True)
     
 
     @app_commands.command(description='Change the team for which you are driving.')
@@ -250,13 +242,12 @@ class RegistrationMod(commands.Cog):
 
     @app_commands.command(description='Change the team of a driver. (requires permission)')
     @app_commands.describe(driver='The driver whose team to change.', team='The team to assign to the driver.')
+    @app_commands.checks.has_any_role(*const.ADMIN_ROLES)
     async def alter_team(self, interaction: discord.Interaction, driver: discord.Member, team: str):
         users = utils.read_json_file(_users)
         user_ = str(driver.id)
 
-        if not utils.is_admin(interaction.user.id):
-            await utils.admonish(interaction)
-        elif user_ in users:
+        if user_ in users:
             users[user_]['team'] = team
             utils.write_json_file(users, _users)
             await utils.update_roster(interaction.guild)
@@ -267,14 +258,12 @@ class RegistrationMod(commands.Cog):
 
     @app_commands.command(description='Alert driver that invite has been sent.')
     @app_commands.describe(driver='The driver who has been invited.')
+    @app_commands.checks.has_any_role(*const.ADMIN_ROLES)
     async def invite(self, interaction: discord.Interaction, driver: discord.Member):
-        if not utils.is_admin(interaction.user.id):
-            await utils.admonish(interaction)
-        else:
-            help = 'https://discord.com/channels/916828519487656007/1025052192815718430/1025054772404944986'
-            await driver.send(f'Your league invite has been sent! Be sure to use /number to claim your number if you haven\'t already. '
-                            f'If you have problems finding it, please refer to: {help}')
-            await interaction.response.send_message(f'{driver.display_name} has been notified of invitation.', ephemeral=True, delete_after=5)
+        help = 'https://discord.com/channels/916828519487656007/1025052192815718430/1025054772404944986'
+        await driver.send(f'Your league invite has been sent! Be sure to use /number to claim your number if you haven\'t already. '
+                        f'If you have problems finding it, please refer to: {help}')
+        await interaction.response.send_message(f'{driver.display_name} has been notified of invitation.', ephemeral=True, delete_after=5)
 
 
 async def setup(bot):
