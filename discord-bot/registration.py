@@ -41,7 +41,7 @@ class RegistrationModal(discord.ui.Modal, title='AMS Registration'):
             await utils.admin_log(interaction.guild, f'/register called by {interaction.user.name}')
             await interaction.response.send_message(f'You are now on the registered. Please read the rules {rules}. '
                                                     f'You can modify your registration details via commands. '
-                                                    f'If you are PRO or CH, use /number to select your number. '
+                                                    f'Please use /number to select your number. '
                                                     f'You can see payment info for your entry fee here: {payment}. '
                                                     f'Use `/help` to see available commands.', ephemeral=True)
         else:
