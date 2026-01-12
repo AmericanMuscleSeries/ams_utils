@@ -266,5 +266,10 @@ class RegistrationMod(commands.Cog):
         await interaction.response.send_message(f'{driver.display_name} has been notified of invitation.', ephemeral=True, delete_after=5)
 
 
+    @app_commands.command(description='Get the league rules.')
+    async def rules(self, interaction: discord.Interaction):
+        await interaction.response.send_message(f'The rules document can be found here: {const.RULES_DOC}', ephemeral=True)
+
+
 async def setup(bot):
     await bot.add_cog(RegistrationMod(bot))
