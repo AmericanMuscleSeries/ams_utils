@@ -4,7 +4,7 @@ import logging
 import os
 import utils
 
-from discord.ext import commands
+from discord.ext import commands, tasks
 from registration import RegistrationModal
 from typing import Literal, Optional
 
@@ -114,7 +114,7 @@ async def register(interaction: discord.Interaction):
 
 
 def can_register_now(user: discord.User) -> bool:
-    if const.REG_OPEN_FOR == 'all' or 'season 9' in [role.name for role in user.roles]:
+    if const.REG_OPEN_FOR == 'all' or 'season 10' in [role.name for role in user.roles]:
         return True
     else:
         return False

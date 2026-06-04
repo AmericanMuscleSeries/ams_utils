@@ -3,4 +3,4 @@ venv/
 static/
 __pycache__/
 demo.py
-
+.idea/
