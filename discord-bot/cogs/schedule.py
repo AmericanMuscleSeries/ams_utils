@@ -37,7 +37,7 @@ class Schedule(commands.Cog):
                 break
         
         if len(output) == 0:
-            output = 'The season is over. There are no more races. :face_holding_back_tears:'
+            output = 'The season is over. There are no more races. :sob:'
         
         await interaction.response.send_message(output, ephemeral=True)
 
