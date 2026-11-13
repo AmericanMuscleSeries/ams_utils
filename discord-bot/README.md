@@ -4,7 +4,12 @@ Jessica Rabbot is a Discord bot containing custom functionality for the American
 The bot runs on `discord.py`.
 
 Dependencies from `requirements.txt` need to be installed via `pip`. The bot can run by executing `main.py`, i.e. `python /path/to/main.py`.
-
+## Seasonal Updates
+- clear user data from static/users.json, leaving `{}`
+- update bot.py `can_register_now` season flag for previous season's role, i.e. `season 11`
+- update season number in utils.py `update_roster`
+- push code to server
+- restart bot
 ## General Use Commands
 ### Help
 The `/help` command displays the help dialog in an ephemeral response.

@@ -53,7 +53,7 @@ async def update_roster(guild: discord.Guild) -> None:
 
     roster = [f'{drivers[d]["num"]} - {drivers[d]["pref_name"]} ({drivers[d]["div"]})' for d in drivers]
     roster.sort(key=lambda d: int(d.split()[0]))
-    output = 'Season 11 roster:\n' + ''.join(f'> {entry}\n' for entry in roster) + _get_stats(drivers)
+    output = 'Season 12 roster:\n' + ''.join(f'> {entry}\n' for entry in roster) + _get_stats(drivers)
     roster_message = await channel.fetch_message(msg_id)
     await roster_message.edit(content=f'{output}')
 
