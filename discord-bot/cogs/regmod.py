@@ -208,7 +208,7 @@ class RegistrationMod(commands.Cog):
     
 
     @app_commands.command(description='Process a driver\'s payment. (requires permissions)')
-    @app_commands.describe(driver='The driver whose pamyent is to be processed.')
+    @app_commands.describe(driver='The driver whose payment is to be processed.')
     @app_commands.checks.has_any_role(*const.ADMIN_ROLES)
     async def payment(self, interaction: discord.Interaction, driver: discord.Member):
         unpaid = discord.utils.get(interaction.guild.roles, name='unpaid')
