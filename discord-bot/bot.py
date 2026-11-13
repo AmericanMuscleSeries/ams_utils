@@ -114,7 +114,7 @@ async def register(interaction: discord.Interaction):
 
 
 def can_register_now(user: discord.User) -> bool:
-    if const.REG_OPEN_FOR == 'all' or 'season 10' in [role.name for role in user.roles]:
+    if const.REG_OPEN_FOR == 'all' or 'season 11' in [role.name for role in user.roles]:
         return True
     else:
         return False
